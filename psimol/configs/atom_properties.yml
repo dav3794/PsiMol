@@ -1,0 +1,540 @@
+# Atom properties configuration file up to atomic number 54
+# Each atom property is defined by a symbol and a list of values for each atom type
+# For the example, see already defined atoms
+
+H:
+  name: Hydrogen
+  symbol: H
+  mass: 1.0 # in atomic mass units
+  atomic_number: 1 # atomic number
+  valence: 1 # number of valence electrons
+  covalent_radius: # in Angstrom
+    - 0.31 # single bond
+
+He:
+  name: Helium
+  symbol: He
+  mass: 4.0
+  atomic_number: 2
+  valence: 0
+  covalent_radius:
+    - 0.28
+
+Li:
+  name: Lithium
+  symbol: Li
+  mass: 6.9
+  atomic_number: 3
+  valence: 1
+  covalent_radius:
+    - 1.28
+  metallic_radius: 1.52
+
+Be:
+  name: Beryllium
+  symbol: Be
+  mass: 9.0
+  atomic_number: 4
+  valence: 2
+  covalent_radius:
+    - 0.96
+  metallic_radius: 1.12
+
+B:
+  name: Boron
+  symbol: B
+  mass: 10.8
+  atomic_number: 5
+  valence: 3
+  covalent_radius:
+    - 0.84 # single bond
+    - 0.82 # double bond
+    - 0.79 # triple bond
+
+C:
+  name: Carbon
+  symbol: C
+  mass: 12.0
+  atomic_number: 6
+  valence: 4
+  covalent_radius:
+    - 0.76 # single bond
+    - 0.67 # double bond
+    - 0.60 # triple bond
+
+N:
+  name: Nitrogen
+  symbol: N
+  mass: 14.0
+  atomic_number: 7
+  valence: 3
+  covalent_radius:
+    - 0.71 # single bond
+    - 0.60 # double bond
+    - 0.54 # triple bond
+
+O:
+  name: Oxygen
+  symbol: O
+  mass: 16.0
+  atomic_number: 8
+  valence: 2
+  covalent_radius:
+    - 0.66 # single bond
+    - 0.60 # double bond
+
+F:
+  name: Fluorine
+  symbol: F
+  mass: 19.0
+  atomic_number: 9
+  valence: 1
+  covalent_radius:
+    - 0.57
+
+Ne:
+  name: Neon
+  symbol: Ne
+  mass: 20.2
+  atomic_number: 10
+  valence: 0
+  covalent_radius:
+    - 0.58
+
+Na:
+  name: Sodium
+  symbol: Na
+  mass: 23.0
+  atomic_number: 11
+  valence: 1
+  covalent_radius:
+    - 1.66
+  metallic_radius: 1.86
+
+Mg:
+  name: Magnesium
+  symbol: Mg
+  mass: 24.3
+  atomic_number: 12
+  valence: 2
+  covalent_radius:
+    - 1.41
+  metallic_radius: 1.60
+
+Al:
+  name: Aluminium
+  symbol: Al
+  mass: 27.0
+  atomic_number: 13
+  valence: 3
+  covalent_radius:
+    - 1.21
+  metallic_radius: 1.43
+
+Si:
+  name: Silicon
+  symbol: Si
+  mass: 28.1
+  atomic_number: 14
+  valence: 4
+  covalent_radius:
+    - 1.11 # single bond
+    - 1.04 # double bond
+
+P:
+  name: Phosphorus
+  symbol: P
+  mass: 31.0
+  atomic_number: 15
+  valence: 5
+  covalent_radius:
+    - 1.07 # single bond
+    - 1.01 # double bond
+
+S:
+  name: Sulfur
+  symbol: S
+  mass: 32.1
+  atomic_number: 16
+  valence: 2
+  covalent_radius:
+    - 1.05 # single bond
+    - 1.02 # double bond
+
+Cl:
+  name: Chlorine
+  symbol: Cl
+  mass: 35.5
+  atomic_number: 17
+  valence: 1
+  covalent_radius:
+    - 1.02
+
+Ar:
+  name: Argon
+  symbol: Ar
+  mass: 40.0
+  atomic_number: 18
+  valence: 0
+  covalent_radius:
+    - 1.06
+
+K:
+  name: Potassium
+  symbol: K
+  mass: 39.1
+  atomic_number: 19
+  valence: 1
+  covalent_radius:
+    - 2.03
+  metallic_radius: 2.31
+
+Ca:
+  name: Calcium
+  symbol: Ca
+  mass: 40.1
+  atomic_number: 20
+  valence: 2
+  covalent_radius:
+    - 1.76
+  metallic_radius: 1.97
+
+Sc:
+  name: Scandium
+  symbol: Sc
+  mass: 45.0
+  atomic_number: 21
+  valence: 3
+  covalent_radius:
+    - 1.70
+  metallic_radius: 1.62
+
+Ti:
+  name: Titanium
+  symbol: Ti
+  mass: 47.9
+  atomic_number: 22
+  valence: 4
+  covalent_radius:
+    - 1.60
+  metallic_radius: 1.47
+
+V:
+  name: Vanadium
+  symbol: V
+  mass: 50.9
+  atomic_number: 23
+  valence: 5
+  covalent_radius:
+    - 1.53
+  metallic_radius: 1.35
+
+Cr:
+  name: Chromium
+  symbol: Cr
+  mass: 52.0
+  atomic_number: 24
+  valence: 6
+  covalent_radius:
+    - 1.39
+  metallic_radius: 1.27
+
+Mn:
+  name: Manganese
+  symbol: Mn
+  mass: 54.9
+  atomic_number: 25
+  valence: 7
+  covalent_radius:
+    - 1.61
+  metallic_radius: 1.39
+
+Fe:
+  name: Iron
+  symbol: Fe
+  mass: 55.8
+  atomic_number: 26
+  valence: 8
+  covalent_radius:
+    - 1.52
+  metallic_radius: 1.26
+
+Co:
+  name: Cobalt
+  symbol: Co
+  mass: 58.9
+  atomic_number: 27
+  valence: 9
+  covalent_radius:
+    - 1.50
+  metallic_radius: 1.25
+
+Ni:
+  name: Nickel
+  symbol: Ni
+  mass: 58.7
+  atomic_number: 28
+  valence: 10
+  covalent_radius:
+    - 1.24
+  metallic_radius: 1.25
+
+Cu:
+  name: Copper
+  symbol: Cu
+  mass: 63.5
+  atomic_number: 29
+  valence: 11
+  covalent_radius:
+    - 1.32
+  metallic_radius: 1.28
+
+Zn:
+  name: Zinc
+  symbol: Zn
+  mass: 65.4
+  atomic_number: 30
+  valence: 12
+  covalent_radius:
+    - 1.22
+  metallic_radius: 1.39
+
+Ga:
+  name: Gallium
+  symbol: Ga
+  mass: 69.7
+  atomic_number: 31
+  valence: 13
+  covalent_radius:
+    - 1.22
+  metallic_radius: 1.41
+
+Ge:
+  name: Germanium
+  symbol: Ge
+  mass: 72.6
+  atomic_number: 32
+  valence: 14
+  covalent_radius:
+    - 1.20 # single bond
+    - 1.17 # double bond
+  metallic_radius: 1.37
+
+As:
+  name: Arsenic
+  symbol: As
+  mass: 74.9
+  atomic_number: 33
+  valence: 15
+  covalent_radius:
+    - 1.19 # single bond
+    - 1.21 # double bond
+  metallic_radius: 1.50
+
+Se:
+  name: Selenium
+  symbol: Se
+  mass: 79.0
+  atomic_number: 34
+  valence: 16
+  covalent_radius:
+    - 1.20 # single bond
+    - 1.16 # double bond
+
+Br:
+  name: Bromine
+  symbol: Br
+  mass: 79.9
+  atomic_number: 35
+  valence: 17
+  covalent_radius:
+    - 1.20
+
+Kr:
+  name: Krypton
+  symbol: Kr
+  mass: 83.8
+  atomic_number: 36
+  valence: 0
+  covalent_radius:
+    - 1.16
+
+Rb:
+  name: Rubidium
+  symbol: Rb
+  mass: 85.5
+  atomic_number: 37
+  valence: 1
+  covalent_radius:
+    - 2.20
+  metallic_radius: 2.35
+
+Sr:
+  name: Strontium
+  symbol: Sr
+  mass: 87.6
+  atomic_number: 38
+  valence: 2
+  covalent_radius:
+    - 1.95
+  metallic_radius: 2.00
+
+Y:
+  name: Yttrium
+  symbol: Y
+  mass: 88.9
+  atomic_number: 39
+  valence: 3
+  covalent_radius:
+    - 1.90
+  metallic_radius: 1.80
+
+Zr:
+  name: Zirconium
+  symbol: Zr
+  mass: 91.2
+  atomic_number: 40
+  valence: 4
+  covalent_radius:
+    - 1.75
+  metallic_radius: 1.55
+
+Nb:
+  name: Niobium
+  symbol: Nb
+  mass: 92.9
+  atomic_number: 41
+  valence: 5
+  covalent_radius:
+    - 1.64
+  metallic_radius: 1.45
+
+Mo:
+  name: Molybdenum
+  symbol: Mo
+  mass: 95.9
+  atomic_number: 42
+  valence: 6
+  covalent_radius:
+    - 1.54
+  metallic_radius: 1.39
+
+Tc:
+  name: Technetium
+  symbol: Tc
+  mass: 98.0
+  atomic_number: 43
+  valence: 7
+  covalent_radius:
+    - 1.47 # single bond
+  metallic_radius: 1.36
+
+Ru:
+  name: Ruthenium
+  symbol: Ru
+  mass: 101.1
+  atomic_number: 44
+  valence: 8
+  covalent_radius:
+    - 1.46 # single bond
+  metallic_radius: 1.34
+
+Rh:
+  name: Rhodium
+  symbol: Rh
+  mass: 102.9
+  atomic_number: 45
+  valence: 9
+  covalent_radius:
+    - 1.42 # single bond
+  metallic_radius: 1.34
+
+Pd:
+  name: Palladium
+  symbol: Pd
+  mass: 106.4
+  atomic_number: 46
+  valence: 10
+  covalent_radius:
+    - 1.39 # single bond
+  metallic_radius: 1.37
+
+Ag:
+  name: Silver
+  symbol: Ag
+  mass: 107.9
+  atomic_number: 47
+  valence: 11
+  covalent_radius:
+    - 1.45 # single bond
+  metallic_radius: 1.44
+
+Cd:
+  name: Cadmium
+  symbol: Cd
+  mass: 112.4
+  atomic_number: 48
+  valence: 12
+  covalent_radius:
+    - 1.44 # single bond
+  metallic_radius: 1.50
+
+In:
+  name: Indium
+  symbol: In
+  mass: 114.8
+  atomic_number: 49
+  valence: 13
+  covalent_radius:
+    - 1.42 # single bond
+  metallic_radius: 1.66
+
+Sn:
+  name: Tin
+  symbol: Sn
+  mass: 118.7
+  atomic_number: 50
+  valence: 14
+  covalent_radius:
+    - 1.39 # single bond
+    - 1.38 # double bond
+  metallic_radius: 1.62
+
+Sb:
+  name: Antimony
+  symbol: Sb
+  mass: 121.8
+  atomic_number: 51
+  valence: 15
+  covalent_radius:
+    - 1.39 # single bond
+    - 1.36 # double bond
+
+Te:
+  name: Tellurium
+  symbol: Te
+  mass: 127.6
+  atomic_number: 52
+  valence: 16
+  covalent_radius:
+    - 1.38 # single bond
+    - 1.35 # double bond
+
+I:
+  name: Iodine
+  symbol: I
+  mass: 126.9
+  atomic_number: 53
+  valence: 17
+  covalent_radius:
+    - 1.39 # single bond
+
+Xe:
+  name: Xenon
+  symbol: Xe
+  mass: 131.3
+  atomic_number: 54
+  valence: 0
+  covalent_radius:
+    - 1.40 # single bond
+  
