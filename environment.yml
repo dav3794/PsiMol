@@ -1,0 +1,12 @@
+# environment.yaml
+
+name: psimol-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.8
+  - psi4
+  - pip
+  - numpy
+  - ruamel.yaml
