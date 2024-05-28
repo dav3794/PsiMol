@@ -5,11 +5,11 @@
 H:
   name: Hydrogen
   symbol: H
-  mass: 1.0 # in atomic mass units
-  atomic_number: 1 # atomic number
-  valence: 1 # number of valence electrons
-  covalent_radius: # in Angstrom
-    - 0.31 # single bond
+  mass: 1.0 #in atomic mass units
+  atomic_number: 1
+  valence: 1 #number of valence electrons
+  covalent_radius: #in Angstroms
+    - 0.32 #single bond
 
 He:
   name: Helium
@@ -18,7 +18,7 @@ He:
   atomic_number: 2
   valence: 0
   covalent_radius:
-    - 0.28
+    - 0.46
 
 Li:
   name: Lithium
@@ -27,7 +27,8 @@ Li:
   atomic_number: 3
   valence: 1
   covalent_radius:
-    - 1.28
+    - 1.33 #single bond
+    - 1.24 #double bond
   metallic_radius: 1.52
 
 Be:
@@ -37,7 +38,9 @@ Be:
   atomic_number: 4
   valence: 2
   covalent_radius:
-    - 0.96
+    - 1.02 #single bond
+    - 0.90 #double bond
+    - 0.85 #triple bond
   metallic_radius: 1.12
 
 B:
@@ -47,9 +50,9 @@ B:
   atomic_number: 5
   valence: 3
   covalent_radius:
-    - 0.84 # single bond
-    - 0.82 # double bond
-    - 0.79 # triple bond
+    - 0.85
+    - 0.78
+    - 0.73
 
 C:
   name: Carbon
@@ -58,9 +61,9 @@ C:
   atomic_number: 6
   valence: 4
   covalent_radius:
-    - 0.76 # single bond
-    - 0.67 # double bond
-    - 0.60 # triple bond
+    - 0.75
+    - 0.67
+    - 0.60
 
 N:
   name: Nitrogen
@@ -69,9 +72,9 @@ N:
   atomic_number: 7
   valence: 3
   covalent_radius:
-    - 0.71 # single bond
-    - 0.60 # double bond
-    - 0.54 # triple bond
+    - 0.71
+    - 0.60
+    - 0.54
 
 O:
   name: Oxygen
@@ -80,8 +83,9 @@ O:
   atomic_number: 8
   valence: 2
   covalent_radius:
-    - 0.66 # single bond
-    - 0.60 # double bond
+    - 0.63
+    - 0.57
+    - 0.53
 
 F:
   name: Fluorine
@@ -90,7 +94,9 @@ F:
   atomic_number: 9
   valence: 1
   covalent_radius:
-    - 0.57
+    - 0.64
+    - 0.59
+    - 0.53
 
 Ne:
   name: Neon
@@ -99,7 +105,8 @@ Ne:
   atomic_number: 10
   valence: 0
   covalent_radius:
-    - 0.58
+    - 0.67
+    - 0.96
 
 Na:
   name: Sodium
@@ -108,7 +115,8 @@ Na:
   atomic_number: 11
   valence: 1
   covalent_radius:
-    - 1.66
+    - 1.55
+    - 1.6
   metallic_radius: 1.86
 
 Mg:
@@ -118,7 +126,9 @@ Mg:
   atomic_number: 12
   valence: 2
   covalent_radius:
-    - 1.41
+    - 1.39
+    - 1.32
+    - 1.27
   metallic_radius: 1.60
 
 Al:
@@ -128,7 +138,9 @@ Al:
   atomic_number: 13
   valence: 3
   covalent_radius:
-    - 1.21
+    - 1.26
+    - 1.13
+    - 1.11
   metallic_radius: 1.43
 
 Si:
@@ -138,18 +150,20 @@ Si:
   atomic_number: 14
   valence: 4
   covalent_radius:
-    - 1.11 # single bond
-    - 1.04 # double bond
+    - 1.16
+    - 1.07
+    - 1.02
 
 P:
   name: Phosphorus
   symbol: P
   mass: 31.0
   atomic_number: 15
-  valence: 5
+  valence: 3
   covalent_radius:
-    - 1.07 # single bond
-    - 1.01 # double bond
+    - 1.11
+    - 1.02
+    - 0.94
 
 S:
   name: Sulfur
@@ -158,8 +172,9 @@ S:
   atomic_number: 16
   valence: 2
   covalent_radius:
-    - 1.05 # single bond
-    - 1.02 # double bond
+    - 1.03
+    - 0.94
+    - 0.95
 
 Cl:
   name: Chlorine
@@ -168,7 +183,9 @@ Cl:
   atomic_number: 17
   valence: 1
   covalent_radius:
-    - 1.02
+    - 0.99
+    - 0.95
+    - 0.93
 
 Ar:
   name: Argon
@@ -177,7 +194,9 @@ Ar:
   atomic_number: 18
   valence: 0
   covalent_radius:
-    - 1.06
+    - 0.96
+    - 1.07
+    - 0.96
 
 K:
   name: Potassium
@@ -186,8 +205,9 @@ K:
   atomic_number: 19
   valence: 1
   covalent_radius:
-    - 2.03
-  metallic_radius: 2.31
+    - 1.96
+    - 1.93
+  metallic_radius: 2.27
 
 Ca:
   name: Calcium
@@ -196,7 +216,9 @@ Ca:
   atomic_number: 20
   valence: 2
   covalent_radius:
-    - 1.76
+    - 1.71
+    - 1.47
+    - 1.33
   metallic_radius: 1.97
 
 Sc:
@@ -206,7 +228,9 @@ Sc:
   atomic_number: 21
   valence: 3
   covalent_radius:
-    - 1.70
+    - 1.48
+    - 1.16
+    - 1.14
   metallic_radius: 1.62
 
 Ti:
@@ -216,7 +240,9 @@ Ti:
   atomic_number: 22
   valence: 4
   covalent_radius:
-    - 1.60
+    - 1.36
+    - 1.17
+    - 1.08
   metallic_radius: 1.47
 
 V:
@@ -226,18 +252,22 @@ V:
   atomic_number: 23
   valence: 5
   covalent_radius:
-    - 1.53
-  metallic_radius: 1.35
+    - 1.34
+    - 1.12
+    - 1.06
+  metallic_radius: 1.34
 
 Cr:
   name: Chromium
   symbol: Cr
   mass: 52.0
   atomic_number: 24
-  valence: 6
+  valence: 2
   covalent_radius:
-    - 1.39
-  metallic_radius: 1.27
+    - 1.22
+    - 1.11
+    - 1.03
+  metallic_radius: 1.28
 
 Mn:
   name: Manganese
@@ -246,17 +276,21 @@ Mn:
   atomic_number: 25
   valence: 7
   covalent_radius:
-    - 1.61
-  metallic_radius: 1.39
+    - 1.19
+    - 1.05
+    - 1.03
+  metallic_radius: 1.27
 
 Fe:
   name: Iron
   symbol: Fe
   mass: 55.8
   atomic_number: 26
-  valence: 8
+  valence: 2
   covalent_radius:
-    - 1.52
+    - 1.16
+    - 1.09
+    - 1.02
   metallic_radius: 1.26
 
 Co:
@@ -264,9 +298,11 @@ Co:
   symbol: Co
   mass: 58.9
   atomic_number: 27
-  valence: 9
+  valence: 2
   covalent_radius:
-    - 1.50
+    - 1.11
+    - 1.03
+    - 0.96
   metallic_radius: 1.25
 
 Ni:
@@ -274,19 +310,23 @@ Ni:
   symbol: Ni
   mass: 58.7
   atomic_number: 28
-  valence: 10
+  valence: 2
   covalent_radius:
-    - 1.24
-  metallic_radius: 1.25
+    - 1.10
+    - 1.01
+    - 1.01
+  metallic_radius: 1.24
 
 Cu:
   name: Copper
   symbol: Cu
   mass: 63.5
   atomic_number: 29
-  valence: 11
+  valence: 1
   covalent_radius:
-    - 1.32
+    - 1.12
+    - 1.15
+    - 1.20
   metallic_radius: 1.28
 
 Zn:
@@ -294,30 +334,34 @@ Zn:
   symbol: Zn
   mass: 65.4
   atomic_number: 30
-  valence: 12
+  valence: 2
   covalent_radius:
-    - 1.22
-  metallic_radius: 1.39
+    - 1.18
+    - 1.20
+  metallic_radius: 1.34
 
 Ga:
   name: Gallium
   symbol: Ga
   mass: 69.7
   atomic_number: 31
-  valence: 13
+  valence: 3
   covalent_radius:
-    - 1.22
-  metallic_radius: 1.41
+    - 1.24
+    - 1.17
+    - 1.21
+  metallic_radius: 1.35
 
 Ge:
   name: Germanium
   symbol: Ge
   mass: 72.6
   atomic_number: 32
-  valence: 14
+  valence: 4
   covalent_radius:
-    - 1.20 # single bond
-    - 1.17 # double bond
+    - 1.21
+    - 1.11
+    - 1.14
   metallic_radius: 1.37
 
 As:
@@ -325,10 +369,11 @@ As:
   symbol: As
   mass: 74.9
   atomic_number: 33
-  valence: 15
+  valence: 3
   covalent_radius:
-    - 1.19 # single bond
-    - 1.21 # double bond
+    - 1.21
+    - 1.14
+    - 1.06
   metallic_radius: 1.50
 
 Se:
@@ -336,19 +381,22 @@ Se:
   symbol: Se
   mass: 79.0
   atomic_number: 34
-  valence: 16
+  valence: 2
   covalent_radius:
-    - 1.20 # single bond
-    - 1.16 # double bond
+    - 1.16
+    - 1.07
+    - 1.07
 
 Br:
   name: Bromine
   symbol: Br
   mass: 79.9
   atomic_number: 35
-  valence: 17
+  valence: 1
   covalent_radius:
-    - 1.20
+    - 1.14
+    - 1.09
+    - 1.10
 
 Kr:
   name: Krypton
@@ -357,7 +405,9 @@ Kr:
   atomic_number: 36
   valence: 0
   covalent_radius:
-    - 1.16
+    - 1.17
+    - 1.21
+    - 1.08
 
 Rb:
   name: Rubidium
@@ -366,8 +416,9 @@ Rb:
   atomic_number: 37
   valence: 1
   covalent_radius:
-    - 2.20
-  metallic_radius: 2.35
+    - 1.10
+    - 1.02
+  metallic_radius: 2.48
 
 Sr:
   name: Strontium
@@ -376,8 +427,10 @@ Sr:
   atomic_number: 38
   valence: 2
   covalent_radius:
-    - 1.95
-  metallic_radius: 2.00
+    - 1.85
+    - 1.57
+    - 1.39
+  metallic_radius: 2.15
 
 Y:
   name: Yttrium
@@ -386,7 +439,9 @@ Y:
   atomic_number: 39
   valence: 3
   covalent_radius:
-    - 1.90
+    - 1.63
+    - 1.30
+    - 1.24
   metallic_radius: 1.80
 
 Zr:
@@ -396,8 +451,10 @@ Zr:
   atomic_number: 40
   valence: 4
   covalent_radius:
-    - 1.75
-  metallic_radius: 1.55
+    - 1.54
+    - 1.27
+    - 1.21
+  metallic_radius: 1.60
 
 Nb:
   name: Niobium
@@ -406,17 +463,21 @@ Nb:
   atomic_number: 41
   valence: 5
   covalent_radius:
-    - 1.64
-  metallic_radius: 1.45
+    - 1.47
+    - 1.25
+    - 1.16
+  metallic_radius: 1.46
 
 Mo:
   name: Molybdenum
   symbol: Mo
-  mass: 95.9
+  mass: 96.0
   atomic_number: 42
-  valence: 6
+  valence: 2
   covalent_radius:
-    - 1.54
+    - 1.38
+    - 1.21
+    - 1.13
   metallic_radius: 1.39
 
 Tc:
@@ -426,7 +487,9 @@ Tc:
   atomic_number: 43
   valence: 7
   covalent_radius:
-    - 1.47 # single bond
+    - 1.28
+    - 1.20
+    - 1.10
   metallic_radius: 1.36
 
 Ru:
@@ -434,9 +497,11 @@ Ru:
   symbol: Ru
   mass: 101.1
   atomic_number: 44
-  valence: 8
+  valence: 2
   covalent_radius:
-    - 1.46 # single bond
+    - 1.25
+    - 1.14
+    - 1.03
   metallic_radius: 1.34
 
 Rh:
@@ -444,9 +509,11 @@ Rh:
   symbol: Rh
   mass: 102.9
   atomic_number: 45
-  valence: 9
+  valence: 2
   covalent_radius:
-    - 1.42 # single bond
+    - 1.25
+    - 1.10
+    - 1.06
   metallic_radius: 1.34
 
 Pd:
@@ -454,9 +521,11 @@ Pd:
   symbol: Pd
   mass: 106.4
   atomic_number: 46
-  valence: 10
+  valence: 2
   covalent_radius:
-    - 1.39 # single bond
+    - 1.20
+    - 1.17
+    - 1.12
   metallic_radius: 1.37
 
 Ag:
@@ -464,9 +533,11 @@ Ag:
   symbol: Ag
   mass: 107.9
   atomic_number: 47
-  valence: 11
+  valence: 1
   covalent_radius:
-    - 1.45 # single bond
+    - 1.28
+    - 1.39
+    - 1.37
   metallic_radius: 1.44
 
 Cd:
@@ -474,30 +545,34 @@ Cd:
   symbol: Cd
   mass: 112.4
   atomic_number: 48
-  valence: 12
+  valence: 2
   covalent_radius:
-    - 1.44 # single bond
-  metallic_radius: 1.50
+    - 1.36
+    - 1.44
+  metallic_radius: 1.51
 
 In:
   name: Indium
   symbol: In
   mass: 114.8
   atomic_number: 49
-  valence: 13
+  valence: 3
   covalent_radius:
-    - 1.42 # single bond
-  metallic_radius: 1.66
+    - 1.42
+    - 1.36
+    - 1.46
+  metallic_radius: 1.67
 
 Sn:
   name: Tin
   symbol: Sn
   mass: 118.7
   atomic_number: 50
-  valence: 14
+  valence: 4
   covalent_radius:
-    - 1.39 # single bond
-    - 1.38 # double bond
+    - 1.40
+    - 1.30
+    - 1.32
   metallic_radius: 1.62
 
 Sb:
@@ -505,29 +580,33 @@ Sb:
   symbol: Sb
   mass: 121.8
   atomic_number: 51
-  valence: 15
+  valence: 3
   covalent_radius:
-    - 1.39 # single bond
-    - 1.36 # double bond
+    - 1.40
+    - 1.33
+    - 1.27
 
 Te:
   name: Tellurium
   symbol: Te
   mass: 127.6
   atomic_number: 52
-  valence: 16
+  valence: 2
   covalent_radius:
-    - 1.38 # single bond
-    - 1.35 # double bond
+    - 1.36
+    - 1.28
+    - 1.21
 
 I:
   name: Iodine
   symbol: I
   mass: 126.9
   atomic_number: 53
-  valence: 17
+  valence: 1
   covalent_radius:
-    - 1.39 # single bond
+    - 1.33
+    - 1.29
+    - 1.25
 
 Xe:
   name: Xenon
@@ -536,5 +615,7 @@ Xe:
   atomic_number: 54
   valence: 0
   covalent_radius:
-    - 1.40 # single bond
-  
+    - 1.31
+    - 1.35
+    - 1.22 
+ 
