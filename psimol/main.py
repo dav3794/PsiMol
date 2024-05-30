@@ -268,7 +268,7 @@ class Molecule:
 
         if atom1.metallic_radius and atom2.metallic_radius:
             metallic_bond_length = atom1.metallic_radius + atom2.metallic_radius
-            if np.abs(distance - metallic_bond_length) < 0.2 / (order + 1):  
+            if np.abs(distance - metallic_bond_length) < 0.2:  
                 bond_order = 'metallic'
         
         for order, (cov_rad1, cov_rad2) in enumerate(
@@ -538,6 +538,6 @@ class Molecule:
         xyz_string = psi_molecule.save_string_xyz()
         xyz_string = xyz_string.strip().split('\n', 1)[1] # psi4 returns some header in first line
         atoms = self._parse_xyz_to_atoms(xyz_string)
-        
+
         return Molecule(self.name, atoms)
     
