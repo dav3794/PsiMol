@@ -1,7 +1,8 @@
 import os 
 import sys
-import argparse
 import logging 
+import argparse
+import numpy as np
 from ruamel.yaml import YAML
 from typing import Any, Dict, List, Literal, Tuple, Union
 
@@ -78,7 +79,7 @@ def get_atom_config(symbol: str) -> Dict[str, Any]:
         Dict[str, Any]: Configuration of an atom.
     """
     package_path = get_package_directory()
-    atom_config_path = os.path.join(package_path, 'config', 'atom_properties.yml')
+    atom_config_path = os.path.join(package_path, 'configs', 'atom_properties.yml')
 
     if not os.path.exists(atom_config_path):
         logging.fatal(f'Atom configuration file not found at {atom_config_path}.')
@@ -94,3 +95,14 @@ def get_atom_config(symbol: str) -> Dict[str, Any]:
     
     return atom_config[symbol]
 
+def euclidean_distance(coords1: np.ndarray, coords2: np.ndarray) -> float:
+    """Calculate the Euclidean distance between two vectors.
+
+    Args:
+        coords1 (np.ndarray): First vector coordinates.
+        coords2 (np.ndarray): Second vector coordinates.
+
+    Returns:
+        float: Euclidean distance between vectors.
+    """
+    return np.linalg.norm(coords1 - coords2)
