@@ -83,7 +83,7 @@ def get_atom_config(symbol: str) -> Dict[str, Any]:
 
     if not os.path.exists(atom_config_path):
         logging.fatal(f'Atom configuration file not found at {atom_config_path}.')
-        sys.exit(1)
+        raise FileNotFoundError(f'Atom configuration file not found at {atom_config_path}.')
 
     yaml = YAML(typ='safe')
     with open(atom_config_path, 'r') as file:
@@ -91,7 +91,7 @@ def get_atom_config(symbol: str) -> Dict[str, Any]:
 
     if symbol not in atom_config:
         logging.error(f'Atom configuration not found for provided symbol {symbol}.')
-        sys.exit(1)
+        raise ValueError(f'Atom configuration not found for provided symbol {symbol}.')
     
     return atom_config[symbol]
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 import re
-import sys
 import psi4
 import logging
 import numpy as np
@@ -145,9 +144,9 @@ class Bond:
             metallic (bool, optional): Whether a bond is metallic. Defaults to False.
         """
 
-        if first_atom == second_atom:
+        if first_atom == second_atom: 
             logging.error('Cannot create a bond of an atom to itself.')
-            sys.exit(1)
+            raise ValueError('Cannot create a bond of an atom to itself.')
         
         self._atoms: FrozenSet[Atom] = frozenset((first_atom, second_atom))
         self.order: Literal[1, 2, 3] = order
@@ -428,7 +427,7 @@ class Molecule:
         with open(file_path, 'r') as file:
             lines = file.readlines()
         
-        # second line is the (optimal) name of the molecule in xyz format
+        # second line is the (optional) name of the molecule in xyz format
         name = lines[1].strip() 
 
         xyz_string = ''.join(lines[2:]) 
@@ -540,4 +539,3 @@ class Molecule:
         atoms = self._parse_xyz_to_atoms(xyz_string)
 
         return Molecule(self.name, atoms)
-    
