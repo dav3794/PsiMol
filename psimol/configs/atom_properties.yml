@@ -27,8 +27,7 @@ Li:
   atomic_number: 3
   valence: 1
   covalent_radius:
-    - 1.33 #single bond
-    - 1.24 #double bond
+    - 1.33
   metallic_radius: 1.52
 
 Be:
@@ -40,7 +39,6 @@ Be:
   covalent_radius:
     - 1.02 #single bond
     - 0.90 #double bond
-    - 0.85 #triple bond
   metallic_radius: 1.12
 
 B:
@@ -50,9 +48,9 @@ B:
   atomic_number: 5
   valence: 3
   covalent_radius:
-    - 0.85
-    - 0.78
-    - 0.73
+    - 0.85 #single bond
+    - 0.78 #double bond
+    - 0.73 #triple bond
 
 C:
   name: Carbon
@@ -85,7 +83,6 @@ O:
   covalent_radius:
     - 0.63
     - 0.57
-    - 0.53
 
 F:
   name: Fluorine
@@ -96,7 +93,6 @@ F:
   covalent_radius:
     - 0.64
     - 0.59
-    - 0.53
 
 Ne:
   name: Neon
@@ -116,7 +112,6 @@ Na:
   valence: 1
   covalent_radius:
     - 1.55
-    - 1.6
   metallic_radius: 1.86
 
 Mg:
@@ -128,7 +123,6 @@ Mg:
   covalent_radius:
     - 1.39
     - 1.32
-    - 1.27
   metallic_radius: 1.60
 
 Al:
@@ -174,7 +168,6 @@ S:
   covalent_radius:
     - 1.03
     - 0.94
-    - 0.95
 
 Cl:
   name: Chlorine
@@ -185,7 +178,6 @@ Cl:
   covalent_radius:
     - 0.99
     - 0.95
-    - 0.93
 
 Ar:
   name: Argon
@@ -206,7 +198,6 @@ K:
   valence: 1
   covalent_radius:
     - 1.96
-    - 1.93
   metallic_radius: 2.27
 
 Ca:
@@ -218,7 +209,6 @@ Ca:
   covalent_radius:
     - 1.71
     - 1.47
-    - 1.33
   metallic_radius: 1.97
 
 Sc:
@@ -314,7 +304,6 @@ Ni:
   covalent_radius:
     - 1.10
     - 1.01
-    - 1.01
   metallic_radius: 1.24
 
 Cu:
@@ -326,7 +315,6 @@ Cu:
   covalent_radius:
     - 1.12
     - 1.15
-    - 1.20
   metallic_radius: 1.28
 
 Zn:
@@ -349,7 +337,6 @@ Ga:
   covalent_radius:
     - 1.24
     - 1.17
-    - 1.21
   metallic_radius: 1.35
 
 Ge:
@@ -361,7 +348,6 @@ Ge:
   covalent_radius:
     - 1.21
     - 1.11
-    - 1.14
   metallic_radius: 1.37
 
 As:
@@ -385,7 +371,6 @@ Se:
   covalent_radius:
     - 1.16
     - 1.07
-    - 1.07
 
 Br:
   name: Bromine
@@ -396,7 +381,6 @@ Br:
   covalent_radius:
     - 1.14
     - 1.09
-    - 1.10
 
 Kr:
   name: Krypton
@@ -417,7 +401,6 @@ Rb:
   valence: 1
   covalent_radius:
     - 1.10
-    - 1.02
   metallic_radius: 2.48
 
 Sr:
@@ -429,7 +412,6 @@ Sr:
   covalent_radius:
     - 1.85
     - 1.57
-    - 1.39
   metallic_radius: 2.15
 
 Y:
@@ -560,7 +542,6 @@ In:
   covalent_radius:
     - 1.42
     - 1.36
-    - 1.46
   metallic_radius: 1.67
 
 Sn:
@@ -572,7 +553,6 @@ Sn:
   covalent_radius:
     - 1.40
     - 1.30
-    - 1.32
   metallic_radius: 1.62
 
 Sb:
@@ -595,7 +575,6 @@ Te:
   covalent_radius:
     - 1.36
     - 1.28
-    - 1.21
 
 I:
   name: Iodine
@@ -606,7 +585,6 @@ I:
   covalent_radius:
     - 1.33
     - 1.29
-    - 1.25
 
 Xe:
   name: Xenon
@@ -619,3 +597,200 @@ Xe:
     - 1.35
     - 1.22 
  
+Cs:
+  name: Caesium
+  symbol: Cs
+  mass: 132.9
+  atomic_number: 55
+  valence: 1
+  covalent_radius:
+    - 2.32
+  metallic_radius: 2.65
+
+Ba:
+  name: Barium
+  symbol: Ba
+  mass: 137.3
+  atomic_number: 56
+  valence: 2
+  covalent_radius:
+    - 1.96
+    - 1.61
+  metallic_radius: 2.22
+
+Lu:
+  name: Lutetium
+  symbol: Lu
+  mass: 175.0
+  atomic_number: 71
+  valence: 3
+  covalent_radius:
+    - 1.62
+    - 1.31
+  metallic_radius: 1.738
+
+Hf:
+  name: Hafnium
+  symbol: Hf
+  mass: 178.5
+  atomic_number: 72
+  valence: 4
+  covalent_radius:
+    - 1.52
+    - 1.28
+    - 1.22
+  metallic_radius: 1.59
+
+Ta:
+  name: Tantalum
+  symbol: Ta
+  mass: 181.0
+  atomic_number: 73
+  valence: 5
+  covalent_radius:
+    - 1.46
+    - 1.26
+    - 1.19
+  metallic_radius: 1.46
+
+W:
+  name: Tungsten
+  symbol: W
+  mass: 183.8
+  atomic_number: 74
+  valence: 2
+  covalent_radius:
+    - 1.37
+    - 1.2
+    - 1.15
+  metallic_radius: 1.39
+
+Re:
+  name: Rhenium
+  symbol: Re
+  mass: 186.2
+  atomic_number: 75
+  valence: 7
+  covalent_radius:
+  metallic_radius: 1.37
+
+Os:
+  name: Osmium
+  symbol: Os
+  mass: 190.2
+  atomic_number: 76
+  valence: 2
+  covalent_radius:
+    - 1.31
+    - 1.19
+    - 1.1
+  metallic_radius: 1.35
+
+Ir:
+  name: Iridium
+  symbol: Ir
+  mass: 192.2
+  atomic_number: 77
+  valence: 2
+  covalent_radius:
+    - 1.22
+    - 1.15
+    - 1.07
+  metallic_radius: 1.355
+
+Pt:
+  name: Platinum
+  symbol: Pt
+  mass: 195.1
+  atomic_number: 78
+  valence: 2
+  covalent_radius:
+    - 1.23
+    - 1.12
+    - 1.1
+  metallic_radius: 1.385
+
+Au:
+  name: Gold
+  symbol: Au
+  mass: 197.0
+  atomic_number: 79
+  valence: 1
+  covalent_radius:
+    - 1.24
+    - 1.21
+  metallic_radius: 1.44
+
+Hg:
+  name: Mercury
+  symbol: Hg
+  mass: 200.6
+  atomic_number: 80
+  valence: 2
+  covalent_radius:
+    - 1.33
+    - 1.42
+  metallic_radius: 1.51
+
+Tl:
+  name: Thallium
+  symbol: Tl
+  mass: 204.4
+  atomic_number: 81
+  valence: 3
+  covalent_radius:
+    - 1.44
+    - 1.42
+  metallic_radius: 1.7
+
+Pb:
+  name: Lead
+  symbol: Pb
+  mass: 207.2
+  atomic_number: 82
+  valence: 4
+  covalent_radius:
+    - 1.44
+    - 1.35
+
+Bi:
+  name: Bismuth
+  symbol: Bi
+  mass: 209.0
+  atomic_number: 83
+  valence: 3
+  covalent_radius:
+    - 1.51
+    - 1.41
+    - 1.35
+
+Po:
+  name: Polonium
+  symbol: Po
+  mass: 209.0
+  atomic_number: 84
+  valence: 2
+  covalent_radius:
+    - 1.45
+    - 1.35
+
+At:
+  name: Astatine
+  symbol: At
+  mass: 210.0
+  atomic_number: 85
+  valence: 1
+  covalent_radius:
+    - 1.47
+    - 1.38
+
+Rn:
+  name: Radon
+  symbol: Rn
+  mass: 222.0
+  atomic_number: 86
+  valence: 0
+  covalent_radius:
+    - 1.42
+    - 1.45
+    - 1.33
