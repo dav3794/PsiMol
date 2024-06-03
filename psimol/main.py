@@ -6,7 +6,7 @@ import logging
 import numpy as np
 from typing import Dict, FrozenSet, List, Literal, Tuple, Union
 
-from .utils import get_atom_config, setup_logging, euclidean_distance
+from utils import get_atom_config, setup_logging, euclidean_distance
 
 setup_logging(logging.INFO)
 
@@ -443,7 +443,57 @@ class Molecule:
         Args:
             file_path (str): Path to the .mol file
         """
-        pass #TODO
+        
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        # first line of file may or may not contain molecule name
+        name = lines[0].strip()
+        # fourth line contains atom and bond count
+        counts = lines[3].strip()
+
+        # fields in .mol files are fixed-width, rather than delineated by whitespace
+        atom_cnt = int(counts[0:3])
+        bond_cnt = int(counts[3:6])
+
+        atom_block = lines[4          : 4+atom_cnt]
+        bond_block = lines[4+atom_cnt : 4+atom_cnt+bond_cnt]
+        print(bond_cnt, len(bond_block))
+
+        atoms = []
+        # used to convert between .mol file symbolic representation of atomic charges to actual values
+        actual_charges = { '  0': 0, '  1': 3, '  2': 2, '  3': 1, '  4': 0, '  5': -1, '  6': -2, '  7': -3 }
+        for i, line in enumerate(atom_block):
+            x = line[ 0:10]
+            y = line[10:20]
+            z = line[20:30]
+            symbol = line[31:34].rstrip()
+            charge = actual_charges[line[36:39]]
+            atom = Atom(symbol, name=i+1, x=float(x), y=float(y), z=float(z), charge=charge)
+            atoms.append(atom)
+
+        bonds: Dict[Atom, List[Bond]] = { atom:[] for atom in atoms }
+        for line in bond_block:
+
+            atom1_idx = int(line[0:3])
+            atom2_idx = int(line[3:6])
+            bond_type = int(line[6:9])
+            if bond_type < 4:
+                bond_order = bond_type
+                bond_aromaticity = False
+            elif bond_type == 4:
+                bond_order = 1
+                bond_aromaticity = True
+            else:
+                bond_order = 1
+                bond_aromaticity = True
+
+            # atoms in the bond block are 1-indexed
+            bond = Bond(atoms[atom1_idx-1], atoms[atom2_idx-1], bond_order, bond_aromaticity)
+            bonds[atoms[atom1_idx-1]].append(bond)
+            bonds[atoms[atom2_idx-1]].append(bond)
+
+        return cls(name, atoms, bonds)
 
     @classmethod
     def from_cif(cls, file_path: str) -> Molecule:
@@ -452,7 +502,114 @@ class Molecule:
         Args:
             file_path (str): Path to the .cif file
         """
-        pass #TODO
+        
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        # the parser will advance to the 'atom_site' loop of the .cif file
+        # (in STAR files (.cif included), tables are called "loops"),
+        # assemble the loop's contents, then parse them
+
+        # used to test if a line is from the header of the 'atom_site' loop
+        def _is_atom_site_header(s: str) -> bool:
+            return bool(re.match(r'_atom_site[_.]', s, re.IGNORECASE))
+        # parser state variables
+        in_atom_site = in_atom_site_body = False
+
+        # will hold the columns of the 'atom_site' loop, along with their order
+        atom_site_header: dict[str:int] = {}
+        ncol = 0
+        # columns required to be present by the parser
+        required_columns = ['type_symbol', 'cartn_x', 'cartn_y', 'cartn_z']
+        # will hold the body of the 'atom_site' loop
+        atom_site_body: list[str] = ""
+
+        for line in lines:
+            line = line.lstrip()
+
+            # phase 1: advance parser to 'atom_site' loop
+            # (in STAR files (CIF included), tables are called "loops")
+            if not in_atom_site:
+                in_atom_site = _is_atom_site_header(line)
+
+            # phase 2: assemble the 'atom_site' loop
+            if in_atom_site:
+                
+                # first, retrieve the columns of the loop
+                if not in_atom_site_body:
+                    if _is_atom_site_header(line):
+                        # add column name to the list, without the loop name prefix
+                        atom_site_header[line[11:].lower().rstrip()] = ncol
+                        ncol += 1
+                    else:
+                        in_atom_site_body = True
+                        # check that the required columns are present
+                        if any( column not in atom_site_header for column in required_columns ):
+                            logging.error(f'.cif file\'s atom_site section lacks the required columns')
+                            return None
+                
+                # assemble the body of the loop
+                if in_atom_site_body:
+                    # a loop may be terminated by:
+                    # - a line containing a single '#' and otherwise empty
+                    # - a new non-looped data item
+                    # - an empty line
+                    # - start of a new loop
+                    if line[0] == '#' or line[0] == '_' or line == '' or line[:5].lower() == 'loop_':
+                        break
+                    atom_site_body += line
+
+        # phase 3: parse loop
+        # .cif file specification states a length limit for lines.
+        # To satisfy this limit, overlong records in loops may be broken into multiple lines.
+        # This caveat essentially makes the newline no different from any other whitespace,
+        # which necessitates treating the body of the loop in a flat manner.
+
+        # guaranteed to mangle any quoted items containing whitespace
+        atom_site_body = atom_site_body.split()
+        atoms = []
+        symbol_idx = atom_site_header['type_symbol']
+        x_idx = atom_site_header['cartn_x']
+        y_idx = atom_site_header['cartn_y']
+        z_idx = atom_site_header['cartn_z']
+        nrow = len(atom_site_body) // ncol
+        # check that the number of items is as would be expected based on the number of rows and columns
+        if nrow*ncol != len(atom_site_body):
+            # if it isn't, a possible cause is that a quoted item got mangled
+            logging.error('Failed to parse .cif file, possibly incompatible')
+            # since this would mess up all the remaining items, the parser gives up
+            return None
+
+        for i in range(nrow):
+
+            offset = i*ncol
+
+            # extract atom's items from `body'
+            symbol: str = atom_site_body[offset+symbol_idx]
+            x: str = atom_site_body[offset+x_idx]
+            y: str = atom_site_body[offset+y_idx]
+            z: str = atom_site_body[offset+z_idx]
+
+            # '.' and '?' signify unapplicable and missing values
+            # the parser can't cope with missing coord or element info and gives up
+            if any(( item == '?' or item == '.' for item in (symbol, x, y, z) )):
+                logging.error('.cif file is missing an atom\'s element or coordinate')
+                return None
+
+            # numeric values in .cif files may be appended with an uncertainty in parenthesis
+            # the parser ignores this
+            for coord in x, y, z:
+                parenthesis = coord.rfind('(')
+                if parenthesis != -1:
+                    coord = coord[:parenthesis]
+
+            atom = Atom(symbol, name=i+1, x=float(x), y=float(y), z=float(z))
+            atoms.append(atom)
+
+        # get conjectural name
+        name = file_path.split('/')[-1]
+
+        return cls(name, atoms)
 
     @classmethod
     def from_smiles(cls, smiles_string: str) -> Molecule:
@@ -491,7 +648,41 @@ class Molecule:
         Returns:
             str: String representing molecule in .mol format
         """
-        pass #TODO
+        
+        # header
+        out = self.name + "\n\n\n"
+
+        unique_bonds = set()
+        for bonds in self.bonds.values():
+            for bond in bonds:
+                if bond not in unique_bonds:
+                    unique_bonds.add(bond)
+
+        # construct atom-to-index dictionary, needed for generating the bond block
+        atom_indices: dict[Atom:int] = { self._atoms[i]:i+1 for i in range(len(self._atoms)) }
+
+        # counts line
+        out += f'{len(self._atoms):3}{len(unique_bonds):3}  0  0  0  0  0  0  0  0999 V2000\n'
+
+        # used to convert between actual atomic charges to .mol file symbolic representations
+        charge_indices = { 0: '  0', 1: '  3', 2: '  2', 3: '  1', -1: '  5', -2: '  6', -3: '  7'  }
+        # atoms
+        for atom in self._atoms:
+            charge = atom.charge if -3 <= atom.charge <= 3 else 0
+            charge = charge_indices[charge]
+            out += f'{atom.x:10.4f}{atom.y:10.4f}{atom.z:10.4f} {atom.symbol:3} 0{charge}  0  0  0  0  0  0  0  0  0\n'
+
+        #bonds
+        for bond in unique_bonds:
+            atom1_idx, atom2_idx = ( atom_indices[atom] for atom in bond.atoms )
+            if bond.aromatic:
+                bond_type = 4
+            else:
+                bond_type = bond.order
+            out += f'{atom1_idx:3}{atom2_idx:3}{bond_type:3}  0  0  0  0\n'
+
+        out += "M  END\n"
+        return out
 
     def save_mol(self, file_path: str):
         """Save molecule to .mol file
