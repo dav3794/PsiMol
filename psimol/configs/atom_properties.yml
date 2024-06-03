@@ -58,7 +58,7 @@ C:
   atomic_number: 6
   valence: 4
   covalent_radius:
-    - 0.76 # single bond
+    - 0.75 # single bond
     - 0.67 # double bond
     - 0.60 # triple bond
 
@@ -80,8 +80,8 @@ O:
   atomic_number: 8
   valence: 2
   covalent_radius:
-    - 0.66 # single bond
-    - 0.60 # double bond
+    - 0.63
+    - 0.57
 
 F:
   name: Fluorine
