@@ -6,7 +6,7 @@ import logging
 import numpy as np
 from typing import Dict, FrozenSet, List, Literal, Tuple, Union
 
-from utils import get_atom_config, setup_logging, euclidean_distance
+from .utils import get_atom_config, setup_logging, euclidean_distance
 
 setup_logging(logging.INFO)
 
