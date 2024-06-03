@@ -153,7 +153,7 @@ P:
   symbol: P
   mass: 31.0
   atomic_number: 15
-  valence: 3
+  valence: 5
   covalent_radius:
     - 1.11
     - 1.02
