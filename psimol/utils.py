@@ -1,3 +1,4 @@
+import re
 import os 
 import sys
 import logging 
@@ -68,7 +69,6 @@ def setup_logging(loglevel: int) -> None:
         force=True    
     )
 
-
 def get_atom_config(symbol: str) -> Dict[str, Any]:
     """Get the configuration of an atom.
 
@@ -106,3 +106,66 @@ def euclidean_distance(coords1: np.ndarray, coords2: np.ndarray) -> float:
         float: Euclidean distance between vectors.
     """
     return np.linalg.norm(coords1 - coords2)
+
+def check_smiles_validity(smiles: str) -> bool:
+    """Check the validity of a SMILES string.
+
+    Args:
+        smiles (str): SMILES string to check.
+
+    Returns:
+        bool: True if the SMILES string is valid, False otherwise.
+    """
+    if not smiles:
+        logging.error('Empty SMILES string provided.')
+        return False
+
+    if '*' in smiles:
+        logging.error('Wildcard character "*" found in SMILES string, which is unsupported.')
+        return False
+    
+    if '.' in smiles:
+        logging.error('Multiple molecules (disconnected structures) in SMILES are unsupported.')
+        return False
+    
+    if '$' in smiles:
+        logging.error('Quadruple bonds in SMILES are unsupported.')
+        return False
+    
+    if '\\' in smiles or '/' in smiles or '@' in smiles:
+        logging.warning('Chirality information in SMILES is unsupported, and will be discarded in geometry computation.')
+        # Don't return False here, as it is a warning
+    
+    if re.search(r'[^HBrClNOSPFI\d\W]', smiles, re.IGNORECASE):
+        logging.error('Only typically organic (H, C, B, N, O, S, P, F, Br, Cl, and I) atoms are supported in SMILES parsing.')
+        return False
+    
+    return True
+
+def normalize_smiles(smiles: str) -> str:
+    """Normalize the SMILES string.
+
+    Args:
+        smiles (str): SMILES string to normalize.
+
+    Returns:
+        str: Normalized SMILES string.
+    """
+    # Remove whitespace, ':', '@', '\' and '/' characters
+    smiles = re.sub(r'[\s:@\\/]', '', smiles)
+
+    # Remove explicit '-' between non-aromatic atoms
+    smiles = re.sub(r'(Br?|Cl?|N|O|S|P|F|I)(-)(Br?|Cl?|N|O|S|P|F|I)', r'\1\3', smiles)
+
+    # Remove leading zeros from numbers while keeping the last digit
+    smiles = re.sub(r'0+(?=\d)', '', smiles)
+
+    # Change charge representation from [+-]{1,} to [+-]n, like ++ -> +2
+    def _replacer(match):
+        sign = match.group(0)[0]  # The sign is either '+' or '-'
+        count = len(match.group(0))  # The length of the matched group
+        return f"{sign}{count}"
+
+    smiles = re.sub(r"(\+{1,}|-{1,})", _replacer, smiles)
+
+    return smiles

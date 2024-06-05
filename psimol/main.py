@@ -5,7 +5,13 @@ import logging
 import numpy as np
 from typing import Dict, FrozenSet, List, Literal, Tuple, Union
 
-from .utils import get_atom_config, setup_logging, euclidean_distance
+from .utils import (
+    get_atom_config, 
+    setup_logging, 
+    euclidean_distance, 
+    check_smiles_validity,
+    normalize_smiles
+    )
 
 setup_logging(logging.INFO)
 
@@ -460,7 +466,34 @@ class Molecule:
         Args:
             smiles_string (str): SMILES string representation of the molecule
         """
-        pass #TODO
+        if not check_smiles_validity(smiles_string):
+            raise ValueError('Invalid SMILES string provided.')
+        
+        smiles_string = normalize_smiles(smiles_string)
+        
+        # simplified tokenizing pattern from Molecular Transformer 
+        # (https://github.com/pschwllr/MolecularTransformer)
+        pattern =  r"(\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|\(|\)|=|#|-|\+|\%[0-9]{2}|[0-9])"
+        regex = re.compile(pattern)
+        tokens = [token for token in regex.findall(smiles_string)]
+
+        # Create atoms from tokens
+        atoms = []
+        for i, token in enumerate(tokens):
+            if token[0] == '[':
+                symbol = token[1:-1]
+                ...
+                # TODO parsing of atom properties from token
+
+            elif token.isalpha():
+                symbol = token
+                atom = Atom(symbol, name=i+1)
+                atoms.append(atom)
+        
+        # Create bonds between atoms
+        bonds = {}
+        ...
+        # TODO
 
     def to_xyz(self) -> str:
         """Return molecule representation in .xyz format
