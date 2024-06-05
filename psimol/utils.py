@@ -6,6 +6,7 @@ import logging
 import argparse
 import numpy as np
 from ruamel.yaml import YAML
+from scipy.optimize import minimize
 from typing import Any, Dict, List, Literal, Tuple, Union
 
 
@@ -70,14 +71,11 @@ def setup_logging(loglevel: int) -> None:
         force=True    
     )
 
-def get_atom_config(symbol: str) -> Dict[str, Any]:
-    """Get the configuration of an atom.
-
-    Args:
-        symbol (str): Atom symbol.
+def get_all_atoms_config() -> Dict[str, Dict[str, Any]]:
+    """Get the configuration of all atoms.
 
     Returns:
-        Dict[str, Any]: Configuration of an atom.
+        Dict[str, Dict[str, Any]]: Configuration of all atoms.
     """
     package_path = get_package_directory()
     atom_config_path = os.path.join(package_path, 'configs', 'atom_properties.yml')
@@ -89,10 +87,22 @@ def get_atom_config(symbol: str) -> Dict[str, Any]:
     yaml = YAML(typ='safe')
     with open(atom_config_path, 'r') as file:
         atom_config = yaml.load(file)
+    
+    return atom_config
+
+def get_atom_config(symbol: str) -> Dict[str, Any]:
+    """Get the configuration of an atom.
+
+    Args:
+        symbol (str): Atom symbol.
+
+    Returns:
+        Dict[str, Any]: Configuration of an atom.
+    """
+    atom_config = get_all_atoms_config()
 
     if symbol not in atom_config:
         logging.error(f'Atom configuration not found for provided symbol {symbol}.')
-        raise ValueError(f'Atom configuration not found for provided symbol {symbol}.')
         raise ValueError(f'Atom configuration not found for provided symbol {symbol}.')
     
     return atom_config[symbol]
@@ -171,3 +181,78 @@ def normalize_smiles(smiles: str) -> str:
     smiles = re.sub(r"(\+{1,}|-{1,})", _replacer, smiles)
 
     return smiles
+
+def get_optimal_coords(
+        n: int, 
+        central_point: np.ndarray,
+        radius: float,
+        other_points: np.ndarray
+    ) -> np.ndarray:
+    """For n points find the optimal coordinates on the sphere of radius r
+    centered at central_point, such that the distance to other_points and the pairs 
+    of query points is maximized.
+
+    Args:
+        initial_points (np.ndarray): Array of points coordinates, of shape (n, 3).
+        central_point (np.ndarray): Coordinates of the central point (shape (3)).
+        radius (float): Radius of the sphere centered in central_point.
+        other_points (np.ndarray): Array with coordinates to the other points, of shape (m, 3).
+
+    Returns:
+        np.ndarray: Optimal coordinates of the points on the sphere (shape (n, 3)).
+    """
+
+    # Initial guess: n point laying in the central-symmerical reflection of the other_points mass center
+    mass_center = np.mean(other_points, axis=0)
+    direction = central_point - mass_center
+    direction /= np.linalg.norm(direction)
+    initial_guess = mass_center + radius * direction
+    initial_guess = np.tile(initial_guess, (n)) # Repeat the same point n times (minimization requires 1D array)
+    initial_guess += np.random.randn(n * 3) * 0.001  # Small random perturbation
+
+    # Objective function: maximize the minimum distance to both other points and among query points
+    def objective(p):
+        p = p.reshape((n, 3))
+        min_distances = []
+        
+        # Distances to other points
+        for i in range(n):
+            min_distances.append(np.min(np.linalg.norm(other_points - p[i], axis=1)))
+        min_distance_to_other_points = np.min(min_distances)
+        # Distances among query points
+        if n > 1:
+            pairwise_distances = []
+            for i in range(n):
+                for j in range(i + 1, n):
+                    pairwise_distances.append(np.linalg.norm(p[i] - p[j]))
+            min_pairwise_distance = np.min(pairwise_distances) / n
+        else:
+            min_pairwise_distance = 0.0
+        # We want to maximize the minimum distances, so we return the negative
+        return -(min_distance_to_other_points + min_pairwise_distance)
+
+    # Constraint function: all points must lie on the sphere
+    def sphere_constraint(p):
+        p = p.reshape((n, 3))
+        return [np.linalg.norm(p[i] - central_point) - radius for i in range(n)]
+
+    # Define constraints as a dictionary
+    constraints = [
+        {
+        'type': 'eq', 
+        'fun': lambda p, i=i: sphere_constraint(p)[i]
+        } 
+        for i in range(n)
+    ]
+
+    # Run the optimization
+    result = minimize(
+        objective, 
+        initial_guess, 
+        constraints=constraints, 
+        options={'disp': False}
+    )
+
+    # Extract the optimal points
+    optimal_points = result.x.reshape((n, 3))
+    return optimal_points

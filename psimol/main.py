@@ -10,7 +10,8 @@ from .utils import (
     setup_logging, 
     euclidean_distance, 
     check_smiles_validity,
-    normalize_smiles
+    normalize_smiles,
+    get_optimal_coords
     )
 
 setup_logging(logging.INFO)
@@ -244,6 +245,51 @@ class Molecule:
     @property
     def bonds(self) -> Dict[Atom, List[Bond]]:
         return self._bonds
+    
+    @property
+    def coord_matrix(self) -> np.ndarray:
+        """Return the coordinates of all atoms in the molecule
+        as a matrix.
+
+        Returns:
+            np.ndarray: Matrix with coordinates of all atoms
+        """
+        return np.stack([atom.xyz for atom in self.atoms])
+    
+    def get_atoms_within_distance(self, point: np.ndarray, distance: float) -> List[Atom]:
+        """Get all atoms within a given distance from a point.
+
+        Args:
+            point (np.ndarray): Coordinates of the point.
+            distance (float): Distance (radius) to the point.
+
+        Returns:
+            List[Atom]: List of atoms within the distance from the point.
+        """
+        atom_distances = np.linalg.norm(self.coord_matrix - point, axis=1)
+        atoms_within_distance = [
+            atom
+            for atom, atom_distance in zip(self.atoms, atom_distances)
+            if atom_distance <= distance
+        ]
+        return atoms_within_distance
+    
+    def get_bonded_atoms(self, atom: Atom) -> List[Atom]:
+        """Get all atoms bonded to the given atom.
+
+        Args:
+            atom (Atom): Atom to get bonded atoms for.
+
+        Returns:
+            List[Atom]: List of atoms bonded to the given atom.
+        """
+        bonded_atoms = [
+            other_atom
+            for bond in self.bonds[atom]
+            for other_atom in bond.atoms
+            if other_atom != atom
+        ]
+        return bonded_atoms
 
     def print_bonds(self, show_length: bool = False):
         """Print all bonds in the molecule.
@@ -316,9 +362,10 @@ class Molecule:
             return True  # Any three points are always planar
         p0 = cycle[0].xyz
         p1 = cycle[1].xyz
-        normal = np.cross(p1 - p0, cycle[2].xyz - p0)
+        p2 = cycle[2].xyz
+        normal = np.cross(p1 - p0, p2 - p0)
         for i in range(3, len(cycle)):
-            if not np.isclose(np.dot(normal, cycle[i].xyz - p0), 0.001):
+            if not np.isclose(np.dot(normal, cycle[i].xyz - p0), 0.0, atol=0.1):
                 return False
         return True
 
@@ -335,6 +382,8 @@ class Molecule:
         aromatic_atoms = {'C', 'N', 'O', 'S'}
 
         all_cycles = self._find_cycles(bonds, aromatic_atoms)
+        all_cycles = set(frozenset(cycle) for cycle in all_cycles)
+        all_cycles = [list(cycle) for cycle in all_cycles]
 
         for cycle in all_cycles:
             if self._is_planar(cycle):
@@ -370,7 +419,7 @@ class Molecule:
                     bonds.setdefault(atom1, []).append(bond)
                     bonds.setdefault(atom2, []).append(bond)
 
-        # self._check_aromaticity(bonds)
+        self._check_aromaticity(bonds)
         return bonds
 
     def _update_bonds(self, atom: Atom, action: Literal['add', 'remove']):
@@ -420,7 +469,7 @@ class Molecule:
     def add_hydrogens(self):
         """Add explicit hydrogens to the molecule"""
         valid_atoms = {'C', 'N', 'O', 'S'}
-        distanceHydrogen = Atom(symbol='H').covalent_radius
+        distance_hydrogen = Atom(symbol='H').covalent_radius[0]
         for atom in self.atoms:
             if atom.symbol in valid_atoms:
                 delocalized_electrons = max(0, sum(bond.aromatic for bond in self.bonds[atom]) - 1)
@@ -428,17 +477,44 @@ class Molecule:
                                 - delocalized_electrons \
                                 - sum(
                     bond.order
-                    for bond in self.bonds[atom]
                     if not bond.aromatic
+                    else 1
+                    for bond in self.bonds[atom] 
                 )
                 if n_implicit_Hs > 0:
                     # add explicit H atoms such that they lay on a sphere around the atom A
                     # with the radius equal to the sum of covalent radius of the atom A
                     # and hydrogen, and the distance between each hydrogen and other atoms
                     # bonded to the atom A is maximized.
-                    constraints = self.atoms
+                    logging.debug(f'Adding {n_implicit_Hs} hydrogens to {atom}')
+                    bond_length = atom.covalent_radius[0] + distance_hydrogen
+                    bonded_atoms = set(self.get_bonded_atoms(atom))
 
-                    pass  # TODO
+                    constraints_bonded = [
+                        atom.xyz
+                        for atom in bonded_atoms
+                    ]
+                    constraints_nonbonded = [
+                        nonb_atom.xyz
+                        for nonb_atom in self.get_atoms_within_distance(atom.xyz, 2 * bond_length)
+                        if nonb_atom not in bonded_atoms and nonb_atom != atom
+                    ]
+
+                    other_points = np.stack(constraints_bonded + constraints_nonbonded)
+
+                    optimal_coords = get_optimal_coords(
+                        n=n_implicit_Hs,
+                        central_point=atom.xyz,
+                        radius=bond_length,
+                        other_points=other_points
+                    )
+
+                    for coords in optimal_coords:
+                        hydrogen = Atom(symbol='H', x=coords[0], y=coords[1], z=coords[2])
+                        bond = Bond(atom, hydrogen, order=1)
+                        self._atoms.append(hydrogen)
+                        self._bonds.setdefault(atom, []).append(bond)
+                        self._bonds.setdefault(hydrogen, []).append(bond)
 
     @staticmethod
     def _parse_xyz_to_atoms(xyz_string: str) -> List[Atom]:
@@ -544,7 +620,7 @@ class Molecule:
         """
         xyz = f'{len(self.atoms)}\n{self.name}\n'  # header
         for atom in self.atoms:
-            xyz += f'{atom.symbol} {atom.x} {atom.y} {atom.z}\n'
+            xyz += f'{atom.symbol} {atom.x:.5f} {atom.y:.5f} {atom.z:.5f}\n'
         return xyz
 
     def save_xyz(self, file_path: str):
