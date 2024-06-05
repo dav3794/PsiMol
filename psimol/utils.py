@@ -1,4 +1,5 @@
 import re
+import re
 import os 
 import sys
 import logging 
@@ -92,6 +93,7 @@ def get_atom_config(symbol: str) -> Dict[str, Any]:
     if symbol not in atom_config:
         logging.error(f'Atom configuration not found for provided symbol {symbol}.')
         raise ValueError(f'Atom configuration not found for provided symbol {symbol}.')
+        raise ValueError(f'Atom configuration not found for provided symbol {symbol}.')
     
     return atom_config[symbol]
 
@@ -160,7 +162,7 @@ def normalize_smiles(smiles: str) -> str:
     # Remove leading zeros from numbers while keeping the last digit
     smiles = re.sub(r'0+(?=\d)', '', smiles)
 
-    # Change charge representation from [+-]{1,} to [+-]n, like ++ -> +2
+    # Change charge representation from [+-]{2,} to [+-]n, like ++ -> +2
     def _replacer(match):
         sign = match.group(0)[0]  # The sign is either '+' or '-'
         count = len(match.group(0))  # The length of the matched group
