@@ -1,9 +1,11 @@
 from __future__ import annotations
 import re
 import psi4
+import py3Dmol
 import logging
 import numpy as np
 from typing import Dict, FrozenSet, List, Literal, Tuple, Union, Set
+from collections import OrderedDict
 
 from .utils import (
     get_atom_config, 
@@ -11,7 +13,9 @@ from .utils import (
     euclidean_distance, 
     check_smiles_validity,
     normalize_smiles,
-    get_optimal_coords
+    get_optimal_coords,
+    generate_ring_points_with_distances,
+    optimize_rotation
     )
 
 setup_logging(logging.INFO)
@@ -213,6 +217,11 @@ class Molecule:
             self._bonds = self._create_bonds_from_xyz(atoms)
         else:
             self._bonds = bonds
+        
+        # Attributes from psi4 calculations
+        self.energy = None
+        self.wfn = None
+        self.frequencies = None
 
     def __str__(self):
         return self.name
@@ -338,7 +347,11 @@ class Molecule:
                 return Bond(atom1, atom2, order=bond_order)
         return None
 
-    def _find_cycles(self, bonds: Dict[Atom, List[Bond]], aromatic_atoms: Set[str]) -> List[List[Atom]]:
+    def _find_cycles(
+            self, 
+            bonds: Dict[Atom, List[Bond]], 
+            aromatic_atoms: Set[str] = {'C', 'N', 'O', 'S'}
+        ) -> List[List[Atom]]:
         def dfs(current, start, visited, path):
             visited.add(current)
             path.append(current)
@@ -365,7 +378,7 @@ class Molecule:
         p2 = cycle[2].xyz
         normal = np.cross(p1 - p0, p2 - p0)
         for i in range(3, len(cycle)):
-            if not np.isclose(np.dot(normal, cycle[i].xyz - p0), 0.0, atol=0.1):
+            if not np.isclose(np.dot(normal, cycle[i].xyz - p0), 0.0, atol=0.2):
                 return False
         return True
 
@@ -592,23 +605,274 @@ class Molecule:
         regex = re.compile(pattern)
         tokens = [token for token in regex.findall(smiles_string)]
 
+        isotopic_mass_pattern = re.compile(r'^\[([0-9]+)')
+        charge_pattern = re.compile(r'([+-][0-9]+)]$')
+        bracketed_token_symbol = re.compile(r'[A-GI-Za-z][a-z]?') # exclude H
+
         # Create atoms from tokens
         atoms = []
-        for i, token in enumerate(tokens):
-            if token[0] == '[':
-                symbol = token[1:-1]
-                ...
-                # TODO parsing of atom properties from token
-
-            elif token.isalpha():
-                symbol = token
-                atom = Atom(symbol, name=i+1)
-                atoms.append(atom)
-        
-        # Create bonds between atoms
         bonds = {}
-        ...
-        # TODO
+        bond_order = 1
+        last_atom_idx = 0
+        current_atom_idx = 0
+
+        branch_stack = []
+        ring = {} # dict mapping ring number to atom
+        
+        add_atom = False
+        aromatic_atoms: List[bool] = [] # whether i-th atom is aromatic
+        for token in tokens:
+            if token[0] == '[': # bracketed tokens like [C], [C+], [C+2], [13C]
+
+                symbol = bracketed_token_symbol.findall(token)[0]
+                atom = Atom(symbol.capitalize(), name=current_atom_idx+1)
+
+                isotopic_mass = isotopic_mass_pattern.findall(token)
+                if isotopic_mass:
+                    atom.mass = int(isotopic_mass[0])
+                
+                charge = charge_pattern.findall(token)
+                if charge:
+                    atom.charge = int(charge[0])
+    
+                add_atom = True
+
+            elif token.isalpha(): # atom symbol
+                symbol = token
+                atom = Atom(symbol.capitalize(), name=current_atom_idx+1)
+                add_atom = True                    
+
+            elif token in {'=', '#'}: # double or triple bond
+                bond_order = 2 if token == '=' else 3
+
+            elif token == '(': # branch start
+                branch_stack.append(last_atom_idx)
+            
+            elif token == ')': # branch end
+                last_atom_idx = branch_stack.pop()
+            
+            elif token.isdigit() or token[0] == '%': # ring number
+                if token in ring:
+                    ring_atom = ring[token]
+                    del ring[token]
+                    if aromatic_atoms[ring_atom] and aromatic_atoms[last_atom_idx]:
+                        aromatic = True
+                    else:
+                        aromatic = False
+                    bond = Bond(
+                        atoms[ring_atom], 
+                        atoms[last_atom_idx], 
+                        order=bond_order,
+                        aromatic=aromatic
+                    )
+                    bonds[atoms[ring_atom]].append(bond)
+                    bonds[atoms[last_atom_idx]].append(bond)
+                else:
+                    ring[token] = last_atom_idx
+            
+            if add_atom:
+                atoms.append(atom)
+                aromatic_atoms.append(symbol.islower())
+                bonds[atom] = []
+
+                if current_atom_idx:
+                    if aromatic_atoms[last_atom_idx] and aromatic_atoms[-1]:
+                        aromatic = True
+                    else:
+                        aromatic = False
+                    bond = Bond(
+                        atoms[last_atom_idx], 
+                        atom, 
+                        order=bond_order, 
+                        aromatic=aromatic
+                    )
+                    bonds[atoms[last_atom_idx]].append(bond)
+                    bonds[atom].append(bond)
+                    last_atom_idx = current_atom_idx
+                current_atom_idx += 1
+                add_atom = False
+                bond_order = 1
+
+        molecule = cls(smiles_string, atoms, bonds)
+
+        # Create planar geometry
+        rings = molecule._find_cycles(bonds)
+        if rings:
+            rings_dict = OrderedDict()
+            for ring in rings:
+                rings_dict[frozenset(ring)] = ring
+            
+            unique_rings = []
+            for ring1 in rings_dict.keys():
+                for ring2 in rings_dict.keys():
+                    if ring1 == ring2:
+                        continue
+                    if ring2.issubset(ring1) or \
+                       (len(ring1 & ring2) > 3 and len(ring1) >= 2 * len(ring2)): # for fused rings
+                        break
+                else:
+                    unique_rings.append(rings_dict[ring1])
+
+            rings = unique_rings
+
+        ringed_atoms: Dict[Atom, Set[int]] = {} # dict mapping atoms to the indices of the ring(s) they belong to
+        for i, ring in enumerate(rings):
+            for atom in ring:
+                if atom in ringed_atoms:
+                    ringed_atoms[atom].add(i)
+                else:
+                    ringed_atoms[atom] = {i}       
+        
+        seen_atoms = set()
+        for atom in atoms:            
+            atom_bonds = bonds[atom]
+
+            if len(atom_bonds) == 1: # case of non-branched first atom
+                bond = atom_bonds[0]
+                other_atom = bond.atoms[0] if bond.atoms[0] != atom else bond.atoms[1]
+                if other_atom in seen_atoms:
+                    continue
+                
+                bond_length = atom.covalent_radius[bond.order - 1] \
+                                + other_atom.covalent_radius[bond.order - 1]
+                
+                other_atom.x = atom.x + bond_length # simply shift the atom in x direction
+                seen_atoms.add(other_atom)
+
+            elif len(atom_bonds) > 1:
+                bonded_atoms_to_optimize = []
+                other_points = []
+                radii = []
+                for bond in atom_bonds:
+                    other_atom = bond.atoms[0] if bond.atoms[0] != atom else bond.atoms[1]
+                    if other_atom in seen_atoms:
+                        other_points.append(other_atom.xyz)
+                        continue
+
+                    if other_atom in ringed_atoms and atom in ringed_atoms and ringed_atoms[atom] & ringed_atoms[other_atom]:
+                        ring_index = (ringed_atoms[atom] & ringed_atoms[other_atom]).pop() # index of intersecting ring
+                        ring = rings[ring_index]
+                        shift = ring.index(other_atom)
+                        ring_coords, ring_distances = [], []
+
+                        # shift the ring so that the current atom is the first one
+                        ring_atoms = ring[shift:] + ring[:shift]
+                        for idx, ring_atom in enumerate(ring_atoms):
+                            other_points.append(ring_atom.xyz)
+
+                            ring_coords.append(
+                                ring_atom.xyz 
+                                if sum(ring_atom.xyz) != 0 # assume that point zero is an unassigned point
+                                else None
+                            )
+
+                            # calculate supposed bond length
+                            previous_ring_atom = ring_atoms[idx - 1]
+                            for ring_bond in bonds[ring_atom]:
+                                if previous_ring_atom in ring_bond.atoms:
+                                    bond_order = ring_bond.order
+                                    break
+                            else:
+                                raise ValueError('No bond found between ring atoms.')
+                            
+                            bond_length = previous_ring_atom.covalent_radius[bond_order - 1] \
+                                            + ring_atom.covalent_radius[bond_order - 1]
+                            ring_distances.append(bond_length)
+                        
+                    
+                        ring_points = generate_ring_points_with_distances(
+                            ring_coords, 
+                            ring_distances
+                        )
+
+                        # optimize the ring geometry
+                        frozen_points_idx = [idx for idx, point in enumerate(ring_coords) if point is not None]
+                        if frozen_points_idx:
+                            seen_points = np.stack([at.xyz for at in seen_atoms])
+                            ring_points = optimize_rotation(
+                                ring_points, 
+                                frozen_points_idx, 
+                                seen_points
+                            )
+
+                        for ring_atom, ring_atom_coords in zip(ring_atoms, ring_points):
+                            if ring_atom not in seen_atoms:
+                                ring_atom.x, ring_atom.y, ring_atom.z = ring_atom_coords
+                                seen_atoms.add(ring_atom)
+                            ringed_atoms[ring_atom].remove(ring_index)
+
+                    else:
+                        bonded_atoms_to_optimize.append(other_atom)
+
+                        bond_length = atom.covalent_radius[bond.order - 1] \
+                                        + other_atom.covalent_radius[bond.order - 1]
+                        radii.append(bond_length)
+                        seen_atoms.add(other_atom)
+                    
+                if not bonded_atoms_to_optimize:
+                    continue
+
+                if not other_points:
+                    other_points = np.array([atom.xyz])
+                else:
+                    other_points = np.stack(other_points)
+
+                optimal_coords = get_optimal_coords(
+                    n=len(bonded_atoms_to_optimize),
+                    central_point=atom.xyz,
+                    radius=radii,
+                    other_points=other_points
+                )
+                
+                for other_atom, coords in zip(bonded_atoms_to_optimize, optimal_coords):
+                    other_atom.x, other_atom.y, other_atom.z = coords
+            seen_atoms.add(atom)
+
+        molecule.add_hydrogens()
+        return molecule
+    
+    def visualize(self):
+        """Visualize the molecule using py3Dmol."""
+        mol = self.to_mol()
+        molview = py3Dmol.view(width=400, height=400)
+        molview.addModel(mol)
+        molview.setStyle({'stick':{}})
+        molview.zoomTo()
+        molview.show()
+
+    def show_modes(self, mode: int = 0):
+        """Show the vibrational mode of the molecule using py3Dmol.
+
+        Args:
+            mode (int, optional): Mode to show. Defaults to 0.
+        """
+        if self.frequencies is None:
+            logging.error('No vibrational frequencies found. Make sure to run ' + \
+                            'molecule.calculate_frequencies() on optimized molecule.')
+            return
+
+        if mode >= len(self.frequencies):
+            logging.error('Mode index out of range.')
+            return
+
+        modes = self.frequencies[mode]
+        xyz = self.to_xyz()
+        lines = xyz.split('\n')
+        new_lines = [
+            lines[0],
+            lines[1]
+        ]
+        for mod, atom_coords in zip(modes, lines[2:]):
+            new_lines.append(atom_coords + ' ' + ' '.join(str(x) for x in mod))
+
+        xyz_with_freqs = '\n'.join(new_lines)
+        xyzview = py3Dmol.view(width=400,height=400)
+
+        xyzview.addModel(xyz_with_freqs, 'xyz', {'vibrate': {'frames': 10, 'amplitude': 1}})
+        xyzview.setStyle({'stick': {}})
+        xyzview.animate({'loop': 'backAndForth'})
+        xyzview.zoomTo()
+        xyzview.show()
 
     def to_xyz(self) -> str:
         """Return molecule representation in .xyz format
@@ -638,7 +902,40 @@ class Molecule:
         Returns:
             str: String representing molecule in .mol format
         """
-        pass  # TODO
+        # header
+        out = self.name + "\n\n\n"
+
+        unique_bonds = set()
+        for bonds in self.bonds.values():
+            for bond in bonds:
+                if bond not in unique_bonds:
+                    unique_bonds.add(bond)
+
+        # construct atom-to-index dictionary, needed for generating the bond block
+        atom_indices: dict[Atom:int] = { self._atoms[i]:i+1 for i in range(len(self._atoms)) }
+
+        # counts line
+        out += f'{len(self._atoms):3}{len(unique_bonds):3}  0  0  0  0  0  0  0  0999 V2000\n'
+
+        # used to convert between actual atomic charges to .mol file symbolic representations
+        charge_indices = { 0: '0', 1: '3', 2: '2', 3: '1', -1: '5', -2: '6', -3: '7'  }
+        # atoms
+        for atom in self._atoms:
+            charge = atom.charge if -3 <= atom.charge <= 3 else 0
+            charge = charge_indices[charge]
+            out += f'{atom.x:10.4f}{atom.y:10.4f}{atom.z:10.4f} {atom.symbol:3} 0  {charge}  0  0  0  0  0  0  0  0  0\n'
+
+        #bonds
+        for bond in unique_bonds:
+            atom1_idx, atom2_idx = ( atom_indices[atom] for atom in bond.atoms )
+            if bond.aromatic:
+                bond_type = 4
+            else:
+                bond_type = bond.order
+            out += f'{atom1_idx:3}{atom2_idx:3}{bond_type:3}  0  0  0  0\n'
+
+        out += "M  END\n"
+        return out
 
     def save_mol(self, file_path: str):
         """Save molecule to .mol file
@@ -660,30 +957,87 @@ class Molecule:
 
     def optimize(
             self,
-            method: str = 'scf/cc-pvdz',
-            reference: str = 'rhf',
+            method: str = 'b3lyp/6-31g*',
+            num_threads: int = 4,
+            memory: str = '2GB',
             **kwargs
-    ) -> Molecule:
+    ) -> Tuple[Molecule, float, psi4.core.Wavefunction]:
         """Optimize the molecule geometry using psi4.
 
         Args:
             method (str, optional): Method/basis set to use for geometry
-            optimization. Defaults to 'scf/cc-pvdz'.
-            reference (str, optional): Reference wavefunction. Defaults to 'rhf'.
+            optimization. Defaults to 'b3lyp/6-31g*'.
+            num_threads (int, optional) Number of threads. Defaults to 4.
+            memory (str, optional): Memory to allocate for the computation. Defaults to '2GB'.
             **kwargs: Additional keyword arguments to pass to psi4.set_options.
 
         Returns:
-            Molecule: Optimized molecule
+            Tuple[Molecule, float]: Optimized molecule and its energy.
         """
         psi_molecule = self.to_psi4()
-        psi4.set_options(
-            {
-                'reference': reference,
-                **kwargs
-            })
-        psi4.optimize(method, molecule=psi_molecule)
+        psi4.set_options({**kwargs})
+        psi4.set_memory(memory)
+        psi4.core.be_quiet()
+        psi4.core.set_num_threads(num_threads)
+        try:
+            energy, wfn = psi4.optimize(method, molecule=psi_molecule, return_wfn=True)
+        except Exception as e:
+            logging.error(f'Calculation did not converge. Try again with a different method or parameters.\n\n{e}')
+            return None
+            
         xyz_string = psi_molecule.save_string_xyz()
         xyz_string = xyz_string.strip().split('\n', 1)[1]  # psi4 returns some header in first line
         atoms = self._parse_xyz_to_atoms(xyz_string)
+        logging.info(f'Optimized geometry of {self.name} with energy {energy:.5f} Ha.')
 
-        return Molecule(self.name, atoms)
+        molecule = Molecule(self.name, atoms)
+        molecule.energy = energy
+        molecule.wfn = wfn
+
+        return molecule, energy, wfn
+    
+    def calculate_frequencies(
+            self,
+            method: str = 'b3lyp/6-31g*',
+            num_threads: int = 4,
+            memory: str = '2GB',
+            **kwargs
+    ) -> Tuple[float, np.ndarray, psi4.core.Wavefunction]:
+        """Calculate vibrational frequencies of the molecule using psi4.
+
+        Args:
+            method (str, optional): Method/basis set to use for vibrational
+            frequency calculation. Defaults to 'b3lyp/6-31g*'.
+            num_threads (int, optional) Number of threads. Defaults to 4.
+            memory (str, optional): Memory to allocate for the computation. Defaults to '2GB'.
+            **kwargs: Additional keyword arguments to pass to psi4.set_options.
+
+        Returns:
+            Tuple[float, np.ndarray]: Energy and modes of vibrational frequencies.
+        """
+        psi_molecule = self.to_psi4()
+        psi4.set_options({**kwargs})
+        psi4.set_memory(memory)
+        psi4.core.be_quiet()
+        psi4.core.set_num_threads(num_threads)
+        try:
+            energy, wfn = psi4.frequency(method, molecule=psi_molecule, return_wfn=True)
+        except Exception as e:
+            logging.error(f'Calculation did not converge. Try again with a different method or parameters.\n\n{e}')
+            return None
+
+        logging.info(f'Calculated vibrational frequencies of {self.name} with  energy {energy:.5f} Ha.')
+
+        frequencies = wfn.frequency_analysis['x'].data
+        frequencies = frequencies.reshape(-1, len(self.atoms), 3)
+
+        if not self.frequencies:
+            self.frequencies = frequencies
+        
+        if not self.energy:
+            self.energy = energy
+        
+        if not self.wfn:
+            self.wfn = wfn
+
+        return energy, frequencies, wfn
