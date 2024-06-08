@@ -305,6 +305,53 @@ def generate_ring_points_with_distances(
     elif len(known_coords) == 1:
         move_index = next(i for i, coord in enumerate(coords) if coord is not None)
 
+    elif len(known_coords) >= 3:
+
+        last_idx = 0
+        for i, coord in enumerate(coords):
+            if coord is not None:
+                x_coords[i], y_coords[i], z_coords[i] = coord
+                last_idx = i
+                
+        z0 = known_coords[0][2]
+        z_coords = np.full(N, z0)
+        known_coords = np.array(known_coords)
+        p1, p2, p3 = known_coords[:3]
+
+        v1 = p2 - p1
+        v2 = p3 - p2
+        cos_angle = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+        angle = np.arccos(cos_angle)
+
+        def rotate_vector(vector, axis, angle):
+            axis = axis / np.linalg.norm(axis)
+            cos_a = np.cos(angle)
+            sin_a = np.sin(angle)
+            return (vector * cos_a +
+                    np.cross(axis, vector) * sin_a +
+                    axis * np.dot(axis, vector) * (1 - cos_a))
+        
+        normal = np.cross(v1, v2)
+        normal = normal / np.linalg.norm(normal)
+
+        prev_vector = v2 / np.linalg.norm(v2)
+        prev_point = p3
+        for i in range(N):
+            idx = (i + last_idx + 1) % N
+            if coords[idx] is not None:
+                continue
+
+            new_vector = rotate_vector(prev_vector, normal, angle)
+            new_vector /= np.linalg.norm(new_vector)
+            new_vector *= distances[idx]
+            prev_vector = new_vector
+            new_point = prev_point + new_vector
+            x_coords[idx], y_coords[idx], z_coords[idx] = new_point
+            prev_point = new_point
+
+        points = np.vstack((x_coords, y_coords, z_coords)).T
+        return points
+
     else:
         origin_known_coords = known_coords = np.array(known_coords)
         sorted_indices = known_coords[:, 0].argsort()

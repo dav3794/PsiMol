@@ -265,6 +265,13 @@ class Molecule:
         """
         return np.stack([atom.xyz for atom in self.atoms])
     
+    @property
+    def energy(self) -> float:
+        if self.energy is None:
+            logging.error('Energy not calculated. Run molecule.calculate_energy() first.')
+            raise ValueError('Energy not calculated.')
+        return self.energy
+        
     def get_atoms_within_distance(self, point: np.ndarray, distance: float) -> List[Atom]:
         """Get all atoms within a given distance from a point.
 
@@ -1016,10 +1023,10 @@ class Molecule:
             Tuple[float, np.ndarray]: Energy and modes of vibrational frequencies.
         """
         psi_molecule = self.to_psi4()
-        psi4.set_options({**kwargs})
+        psi4.set_options({**kwargs}, verbose=False)
         psi4.set_memory(memory)
         psi4.core.be_quiet()
-        psi4.core.set_num_threads(num_threads)
+        psi4.core.set_num_threads(num_threads, quiet=True)
         try:
             energy, wfn = psi4.frequency(method, molecule=psi_molecule, return_wfn=True)
         except Exception as e:
@@ -1041,3 +1048,38 @@ class Molecule:
             self.wfn = wfn
 
         return energy, frequencies, wfn
+    
+    def calculate_energy(
+            self,
+            method: str = 'b3lyp/6-31g*',
+            num_threads: int = 4,
+            memory: str = '2GB',
+            **kwargs
+    ) -> float:
+        """Calculate single-point energy of the molecule using psi4.
+
+        Args:
+            method (str, optional): Method/basis set to use for calculations. Defaults to 'b3lyp/6-31g*'.
+            num_threads (int, optional): Number of threads. Defaults to 4.
+            memory (str, optional): Amount of memory to reserve. Defaults to '2GB'.
+
+        Returns:
+            float: Single point energy of the molecule in Hartree.
+        """
+        psi_molecule = self.to_psi4()
+        psi4.set_options({**kwargs})
+        psi4.set_memory(memory)
+        psi4.core.be_quiet()
+        psi4.core.set_num_threads(num_threads)
+        try:
+            energy = psi4.energy(method, molecule=psi_molecule)
+        except Exception as e:
+            logging.error(f'Calculation did not converge. Try again with a different method or parameters.\n\n{e}')
+            return None
+
+        logging.info(f'Calculated single-point energy of {self.name} equals {energy:.5f} Ha.')
+
+        if not self.energy:
+            self.energy = energy
+        
+        return energy
