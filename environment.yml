@@ -10,3 +10,6 @@ dependencies:
   - pip
   - numpy
   - ruamel.yaml
+  - scipy
+  - pip:
+    - py3Dmol
