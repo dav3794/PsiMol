@@ -264,13 +264,6 @@ class Molecule:
             np.ndarray: Matrix with coordinates of all atoms
         """
         return np.stack([atom.xyz for atom in self.atoms])
-    
-    @property
-    def energy(self) -> float:
-        if self.energy is None:
-            logging.error('Energy not calculated. Run molecule.calculate_energy() first.')
-            raise ValueError('Energy not calculated.')
-        return self.energy
         
     def get_atoms_within_distance(self, point: np.ndarray, distance: float) -> List[Atom]:
         """Get all atoms within a given distance from a point.
@@ -1038,13 +1031,13 @@ class Molecule:
         frequencies = wfn.frequency_analysis['x'].data
         frequencies = frequencies.reshape(-1, len(self.atoms), 3)
 
-        if not self.frequencies:
+        if self.frequencies is None:
             self.frequencies = frequencies
         
-        if not self.energy:
+        if self.energy is None:
             self.energy = energy
         
-        if not self.wfn:
+        if self.wfn is None:
             self.wfn = wfn
 
         return energy, frequencies, wfn
@@ -1079,7 +1072,7 @@ class Molecule:
 
         logging.info(f'Calculated single-point energy of {self.name} equals {energy:.5f} Ha.')
 
-        if not self.energy:
+        if self.energy is None:
             self.energy = energy
         
         return energy
