@@ -487,15 +487,22 @@ class Molecule:
         distance_hydrogen = Atom(symbol='H').covalent_radius[0]
         for atom in self.atoms:
             if atom.symbol in valid_atoms:
-                delocalized_electrons = max(0, sum(bond.aromatic for bond in self.bonds[atom]) - 1)
+                if atom in self.bonds:
+                    delocalized_electrons = max(0, sum(bond.aromatic for bond in self.bonds[atom]) - 1)
+                    bond_orders = sum(
+                        bond.order
+                        if not bond.aromatic
+                        else 1
+                        for bond in self.bonds[atom] 
+                    )
+                    bonded = True
+                else: 
+                    delocalized_electrons = 0
+                    bond_orders = 0
+                    bonded = False
                 n_implicit_Hs = atom.number_of_possible_bonds() \
                                 - delocalized_electrons \
-                                - sum(
-                    bond.order
-                    if not bond.aromatic
-                    else 1
-                    for bond in self.bonds[atom] 
-                )
+                                - bond_orders
                 if n_implicit_Hs > 0:
                     # add explicit H atoms such that they lay on a sphere around the atom A
                     # with the radius equal to the sum of covalent radius of the atom A
@@ -503,19 +510,28 @@ class Molecule:
                     # bonded to the atom A is maximized.
                     logging.debug(f'Adding {n_implicit_Hs} hydrogens to {atom}')
                     bond_length = atom.covalent_radius[0] + distance_hydrogen
-                    bonded_atoms = set(self.get_bonded_atoms(atom))
 
-                    constraints_bonded = [
-                        atom.xyz
-                        for atom in bonded_atoms
-                    ]
+                    if bonded:
+                        bonded_atoms = set(self.get_bonded_atoms(atom))
+                        constraints_bonded = [
+                            atom.xyz
+                            for atom in bonded_atoms
+                        ]
+                    else:
+                        bonded_atoms = set()
+                        constraints_bonded = []
+
                     constraints_nonbonded = [
                         nonb_atom.xyz
                         for nonb_atom in self.get_atoms_within_distance(atom.xyz, 2 * bond_length)
                         if nonb_atom not in bonded_atoms and nonb_atom != atom
                     ]
 
-                    other_points = np.stack(constraints_bonded + constraints_nonbonded)
+                    other_points = constraints_bonded + constraints_nonbonded
+                    if not other_points:
+                        other_points = np.array([atom.xyz])
+                    else:
+                        other_points = np.array(other_points)
 
                     optimal_coords = get_optimal_coords(
                         n=n_implicit_Hs,
