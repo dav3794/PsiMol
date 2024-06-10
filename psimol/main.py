@@ -349,27 +349,44 @@ class Molecule:
                 return Bond(atom1, atom2, order=bond_order)
         return None
 
-    def _find_cycles(
-            self, 
-            bonds: Dict[Atom, List[Bond]], 
-            aromatic_atoms: Set[str] = {'C', 'N', 'O', 'S'}
-        ) -> List[List[Atom]]:
-        def dfs(current, start, visited, path):
-            visited.add(current)
-            path.append(current)
-            for bond in bonds[current]:
-                next_atom = next(a for a in bond.atoms if a != current)
-                if next_atom == start and len(path) > 2:
-                    cycles.append(path[:])
-                elif next_atom not in visited and next_atom.symbol in aromatic_atoms:
-                    dfs(next_atom, start, visited, path)
-            path.pop()
-            visited.remove(current)
+    def _find_cycles(self, bonds: Dict[Atom, List[Bond]], aromatic_atoms: Set[str] = {'C', 'N', 'O', 'S'}) -> List[
+        List[Atom]]:
+        def dfs_cycle(u, p, color: Dict[Atom, int], par: Dict[Atom, Atom], cyclenumber: int, cycles: List[List[Atom]]):
+            if color[u] == 2:
+                return cyclenumber
 
+            if color[u] == 1:
+                cycle = []
+                cur = p
+                while cur != u:
+                    cycle.append(cur)
+                    cur = par[cur]
+                cycle.append(cur)
+                cycles.append(cycle)
+                cyclenumber += 1
+                return cyclenumber
+
+            par[u] = p
+            color[u] = 1
+
+            for bond in bonds[u]:
+                v = next(a for a in bond.atoms if a != u)
+                if v == par[u]:
+                    continue
+                cyclenumber = dfs_cycle(v, u, color, par, cyclenumber, cycles)
+
+            color[u] = 2
+            return cyclenumber
+
+        color = {atom: 0 for atom in bonds}
+        par = {atom: None for atom in bonds}
         cycles = []
+        cyclenumber = 0
+
         for atom in bonds:
-            if atom.symbol in aromatic_atoms:
-                dfs(atom, atom, set(), [])
+            if atom.symbol in aromatic_atoms and color[atom] == 0:
+                cyclenumber = dfs_cycle(atom, None, color, par, cyclenumber, cycles)
+
         return cycles
 
     def _is_planar(self, cycle: List[Atom]) -> bool:
@@ -388,8 +405,8 @@ class Molecule:
         """Given a dictionary of bonds, check if any of the bonds
         are aromatic. If so, update such bond's 'aromatic' parameter.
 
-        The bonds are aromatic if they are part of planar ring (flat cycle)
-        built of atoms from (C, N, O or S).
+        The bonds are aromatic if they are part of a planar ring (flat cycle)
+        built of atoms from (C, N, O, or S).
 
         Args:
             bonds (Dict[Atom, List[Bond]]): Bonds in the molecule.
@@ -397,8 +414,8 @@ class Molecule:
         aromatic_atoms = {'C', 'N', 'O', 'S'}
 
         all_cycles = self._find_cycles(bonds, aromatic_atoms)
-        all_cycles = set(frozenset(cycle) for cycle in all_cycles)
-        all_cycles = [list(cycle) for cycle in all_cycles]
+        unique_cycles = set(frozenset(cycle) for cycle in all_cycles)
+        all_cycles = [list(cycle) for cycle in unique_cycles]
 
         for cycle in all_cycles:
             if self._is_planar(cycle):
