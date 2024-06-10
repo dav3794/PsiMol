@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>psimol.Molecule - PsiMol</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "psimol.Molecule";
+        var mkdocs_page_input_path = "python/molecule.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]--> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../index.html" class="icon icon-home"> PsiMol
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Python module</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">psimol.Molecule</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule">Molecule</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.__init__">__init__</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.add_atom">add_atom</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.add_hydrogens">add_hydrogens</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.atoms">atoms</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.bonds">bonds</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.calculate_energy">calculate_energy</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.calculate_frequencies">calculate_frequencies</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.coord_matrix">coord_matrix</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.from_cif">from_cif</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.from_mol">from_mol</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.from_smiles">from_smiles</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.from_xyz">from_xyz</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.get_atoms_within_distance">get_atoms_within_distance</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.get_bonded_atoms">get_bonded_atoms</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.molar_mass">molar_mass</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.optimize">optimize</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.print_bonds">print_bonds</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.remove_atom">remove_atom</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.save_mol">save_mol</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.save_xyz">save_xyz</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.show_modes">show_modes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.to_mol">to_mol</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.to_psi4">to_psi4</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.to_xyz">to_xyz</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.total_charge">total_charge</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Molecule.visualize">visualize</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="atom.html">psimol.Atom</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="bond.html">psimol.Bond</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">CLI tool</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli/intro.html">Overview</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PsiMol</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html" class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Python module</li>
+      <li class="breadcrumb-item active">psimol.Molecule</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="psimolmolecule">psimol.Molecule</h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="main.Molecule"></a>
+    <div class="doc doc-contents first">
+
+
+      <p>Class to represent a molecule.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.__init__" class="doc doc-heading">
+            <code class=" language-python"><span style="color: #0000FF">__init__</span>(name, atoms, bonds<span style="color: #666666">=</span><span style="color: #008000; font-weight: bold">None</span>)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>name</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Name of the molecule.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>atoms</code></b>
+                  (<code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of atoms in the molecule.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>bonds</code></b>
+                  (<code><span title="typing.Dict">Dict</span>[<a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a>, <span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="main.Bond" href="bond.html#main.Bond">Bond</a>]]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Dictionary mapping atoms to their bonds.
+If not provided, bonds are created based on the covalent radii of atoms and their
+coordinates.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.add_atom" class="doc doc-heading">
+            <code class=" language-python">add_atom(atom)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Add an atom to the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>atom</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>Atom to be added to the molecule.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.add_hydrogens" class="doc doc-heading">
+            <code class=" language-python">add_hydrogens()</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Add explicit hydrogens to the molecule</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="main.Molecule.atoms" class="doc doc-heading">
+            <code class=" language-python">atoms: List[Atom]</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Expose the constituent atoms of the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a>]</code>
+              –
+              <div class="doc-md-description">
+                <p>List[Atom]: List of atoms in the molecule</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="main.Molecule.bonds" class="doc doc-heading">
+            <code class=" language-python">bonds: Dict[Atom, List[Bond]]</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Expose the bonds between the atoms of the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.Dict">Dict</span>[<a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a>, <span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="main.Bond" href="bond.html#main.Bond">Bond</a>]]</code>
+              –
+              <div class="doc-md-description">
+                <p>Dict[Atom, List[Bond]]: Dictionary of atoms and the bonds they participate in</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.calculate_energy" class="doc doc-heading">
+            <code class=" language-python">calculate_energy(method<span style="color: #666666">=</span><span style="color: #BA2121">&#39;b3lyp/6-31g*&#39;</span>, num_threads<span style="color: #666666">=4</span>, memory<span style="color: #666666">=</span><span style="color: #BA2121">&#39;2GB&#39;</span>, <span style="color: #666666">**</span>kwargs)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate single-point energy of the molecule using psi4.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>method</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;b3lyp/6-31g*&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Method/basis set to use for calculations. Defaults to 'b3lyp/6-31g*'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>num_threads</code></b>
+                  (<code>int</code>, default:
+                      <code>4</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Number of threads. Defaults to 4.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memory</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;2GB&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Amount of memory to reserve. Defaults to '2GB'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>float</code></b>(                  <code>float</code>
+)              –
+              <div class="doc-md-description">
+                <p>Single point energy of the molecule in Hartree.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.calculate_frequencies" class="doc doc-heading">
+            <code class=" language-python">calculate_frequencies(method<span style="color: #666666">=</span><span style="color: #BA2121">&#39;b3lyp/6-31g*&#39;</span>, num_threads<span style="color: #666666">=4</span>, memory<span style="color: #666666">=</span><span style="color: #BA2121">&#39;2GB&#39;</span>, <span style="color: #666666">**</span>kwargs)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate vibrational frequencies of the molecule using psi4.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>method</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;b3lyp/6-31g*&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Method/basis set to use for vibrational
+frequency calculation. Defaults to 'b3lyp/6-31g*'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>num_threads</code></b>
+                  (<code>int</code>, default:
+                      <code>4</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Number of threads. Defaults to 4.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memory</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;2GB&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Memory to allocate for the computation. Defaults to '2GB'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>**kwargs</code></b>
+              –
+              <div class="doc-md-description">
+                <p>Additional keyword arguments to pass to psi4.set_options.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.Tuple">Tuple</span>[float, <span title="numpy.ndarray">ndarray</span>, <span title="psi4.core.Wavefunction">Wavefunction</span>]</code>
+              –
+              <div class="doc-md-description">
+                <p>Tuple[float, np.ndarray]: Energy and modes of vibrational frequencies.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="main.Molecule.coord_matrix" class="doc doc-heading">
+            <code class=" language-python">coord_matrix: np<span style="color: #666666">.</span>ndarray</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Return the coordinates of all atoms in the molecule
+as a matrix.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
+              –
+              <div class="doc-md-description">
+                <p>np.ndarray: Matrix with coordinates of all atoms</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.from_cif" class="doc doc-heading">
+            <code class=" language-python">from_cif(file_path)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create molecule from .cif file</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file_path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to the .cif file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.from_mol" class="doc doc-heading">
+            <code class=" language-python">from_mol(file_path)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create molecule from .mol file</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file_path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to the .mol file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.from_smiles" class="doc doc-heading">
+            <code class=" language-python">from_smiles(smiles_string)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create molecule from SMILES string representation</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>smiles_string</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>SMILES string representation of the molecule</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.from_xyz" class="doc doc-heading">
+            <code class=" language-python">from_xyz(file_path)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create molecule from .xyz file</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file_path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to the .xyz file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.get_atoms_within_distance" class="doc doc-heading">
+            <code class=" language-python">get_atoms_within_distance(point, distance)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Get all atoms within a given distance from a point.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>point</code></b>
+                  (<code><span title="numpy.ndarray">ndarray</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Coordinates of the point.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>distance</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>Distance (radius) to the point.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a>]</code>
+              –
+              <div class="doc-md-description">
+                <p>List[Atom]: List of atoms within the distance from the point.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.get_bonded_atoms" class="doc doc-heading">
+            <code class=" language-python">get_bonded_atoms(atom)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Get all atoms bonded to the given atom.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>atom</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>Atom to get bonded atoms for.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a>]</code>
+              –
+              <div class="doc-md-description">
+                <p>List[Atom]: List of atoms bonded to the given atom.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="main.Molecule.molar_mass" class="doc doc-heading">
+            <code class=" language-python">molar_mass: <span style="color: #008000">float</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate the molar mass of the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>float</code></b>(                  <code>float</code>
+)              –
+              <div class="doc-md-description">
+                <p>Molar mass of the molecule</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.optimize" class="doc doc-heading">
+            <code class=" language-python">optimize(method<span style="color: #666666">=</span><span style="color: #BA2121">&#39;b3lyp/6-31g*&#39;</span>, num_threads<span style="color: #666666">=4</span>, memory<span style="color: #666666">=</span><span style="color: #BA2121">&#39;2GB&#39;</span>, <span style="color: #666666">**</span>kwargs)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Optimize the molecule geometry using psi4.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>method</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;b3lyp/6-31g*&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Method/basis set to use for geometry
+optimization. Defaults to 'b3lyp/6-31g*'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>num_threads</code></b>
+                  (<code>int</code>, default:
+                      <code>4</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Number of threads. Defaults to 4.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memory</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;2GB&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Memory to allocate for the computation. Defaults to '2GB'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>**kwargs</code></b>
+              –
+              <div class="doc-md-description">
+                <p>Additional keyword arguments to pass to psi4.set_options.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="typing.Tuple">Tuple</span>[<a class="autorefs autorefs-internal" title="main.Molecule" href="#main.Molecule">Molecule</a>, float, <span title="psi4.core.Wavefunction">Wavefunction</span>]</code>
+              –
+              <div class="doc-md-description">
+                <p>Tuple[Molecule, float]: Optimized molecule and its energy.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.print_bonds" class="doc doc-heading">
+            <code class=" language-python">print_bonds(show_length<span style="color: #666666">=</span><span style="color: #008000; font-weight: bold">False</span>)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Print all bonds in the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>show_length</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether to print bond length. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.remove_atom" class="doc doc-heading">
+            <code class=" language-python">remove_atom(atom)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Remove an atom from the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>atom</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>Atom to be removed from the molecule.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.save_mol" class="doc doc-heading">
+            <code class=" language-python">save_mol(file_path)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Save molecule to .mol file</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file_path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to the .mol file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.save_xyz" class="doc doc-heading">
+            <code class=" language-python">save_xyz(file_path)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Save molecule to .xyz file</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>file_path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to the .xyz file</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.show_modes" class="doc doc-heading">
+            <code class=" language-python">show_modes(mode<span style="color: #666666">=0</span>)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Show the vibrational mode of the molecule using py3Dmol.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>mode</code></b>
+                  (<code>int</code>, default:
+                      <code>0</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Mode to show. Defaults to 0.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.to_mol" class="doc doc-heading">
+            <code class=" language-python">to_mol()</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Return molecule representation in .mol format</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>str</code></b>(                  <code>str</code>
+)              –
+              <div class="doc-md-description">
+                <p>String representing molecule in .mol format</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.to_psi4" class="doc doc-heading">
+            <code class=" language-python">to_psi4()</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create psi4 molecule object.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="psi4.Molecule">Molecule</span></code>
+              –
+              <div class="doc-md-description">
+                <p>psi4.Molecule: psi4 molecule object</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.to_xyz" class="doc doc-heading">
+            <code class=" language-python">to_xyz()</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Return molecule representation in .xyz format</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>str</code></b>(                  <code>str</code>
+)              –
+              <div class="doc-md-description">
+                <p>String representing molecule in .xyz format</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="main.Molecule.total_charge" class="doc doc-heading">
+            <code class=" language-python">total_charge: <span style="color: #008000">int</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate the total charge of the molecule.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>int</code></b>(                  <code>int</code>
+)              –
+              <div class="doc-md-description">
+                <p>Total charge of the molecule</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Molecule.visualize" class="doc doc-heading">
+            <code class=" language-python">visualize()</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Visualize the molecule using py3Dmol.</p>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="atom.html" class="btn btn-neutral float-right" title="psimol.Atom">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="intro.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="atom.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
