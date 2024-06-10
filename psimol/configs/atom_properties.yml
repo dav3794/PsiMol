@@ -59,9 +59,9 @@ C:
   atomic_number: 6
   valence: 4
   covalent_radius:
-    - 0.75
-    - 0.67
-    - 0.60
+    - 0.75 # single bond
+    - 0.67 # double bond
+    - 0.60 # triple bond
 
 N:
   name: Nitrogen
