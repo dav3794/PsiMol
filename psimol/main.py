@@ -348,6 +348,29 @@ class Molecule:
             else:
                 return Bond(atom1, atom2, order=bond_order)
         return None
+    
+    def _find_all_cycles(
+            self, 
+            bonds: Dict[Atom, List[Bond]], 
+            aromatic_atoms: Set[str] = {'C', 'N', 'O', 'S'}
+        ) -> List[List[Atom]]:
+        def dfs(current, start, visited, path):
+            visited.add(current)
+            path.append(current)
+            for bond in bonds[current]:
+                next_atom = next(a for a in bond.atoms if a != current)
+                if next_atom == start and len(path) > 2:
+                    cycles.append(path[:])
+                elif next_atom not in visited and next_atom.symbol in aromatic_atoms:
+                    dfs(next_atom, start, visited, path)
+            path.pop()
+            visited.remove(current)
+
+        cycles = []
+        for atom in bonds:
+            if atom.symbol in aromatic_atoms:
+                dfs(atom, atom, set(), [])
+        return cycles
 
     def _find_cycles(self, bonds: Dict[Atom, List[Bond]], aromatic_atoms: Set[str] = {'C', 'N', 'O', 'S'}) -> List[
         List[Atom]]:
@@ -886,7 +909,8 @@ class Molecule:
         molecule = cls(smiles_string, atoms, bonds)
 
         # Create planar geometry
-        rings = molecule._find_cycles(bonds)
+        rings = molecule._find_all_cycles(bonds)
+
         if rings:
             rings_dict = OrderedDict()
             for ring in rings:
