@@ -1,5 +1,6 @@
 from __future__ import annotations
 import re
+import os
 import psi4
 import py3Dmol
 import logging
@@ -671,13 +672,13 @@ class Molecule:
                     if _is_atom_site_header(line):
                         # add column name to the list, without the loop name prefix
                         column_name = line[11:].lower().rstrip()
-                        if columns_name in required_columns:
+                        if column_name in required_columns:
                             atom_site_header[column_name] = ncol
                         ncol += 1
                     else:
                         in_atom_site_body = True
                         # check that the required columns are present
-                        if len(atom_site_header < 4):
+                        if len(atom_site_header) < 4:
                             logging.error(f'.cif file\'s atom_site section lacks the required columns')
                             return None
                 
@@ -731,9 +732,9 @@ class Molecule:
 
             # numeric values in .cif files may be appended with an uncertainty in parenthesis
             # the parser ignores this
-            x = re.match(r'^[^(]+', x)
-            y = re.match(r'^[^(]+', y)
-            z = re.match(r'^[^(]+', z)
+            x = re.sub(r'\(.*', '', x)
+            y = re.sub(r'\(.*', '', y)
+            z = re.sub(r'\(.*', '', z)
             
             atom = Atom(symbol, name=i+1, x=float(x), y=float(y), z=float(z))
             atoms.append(atom)
