@@ -5,6 +5,7 @@ import psi4
 import logging
 import numpy as np
 from typing import Dict, FrozenSet, List, Literal, Tuple, Union
+import os
 
 from .utils import get_atom_config, setup_logging, euclidean_distance
 
@@ -458,7 +459,6 @@ class Molecule:
 
         atom_block = lines[4          : 4+atom_cnt]
         bond_block = lines[4+atom_cnt : 4+atom_cnt+bond_cnt]
-        print(bond_cnt, len(bond_block))
 
         atoms = []
         # used to convert between .mol file symbolic representation of atomic charges to actual values
@@ -486,7 +486,7 @@ class Molecule:
                 bond_aromaticity = True
             else:
                 bond_order = 1
-                bond_aromaticity = True
+                bond_aromaticity = False
 
             # atoms in the bond block are 1-indexed
             bond = Bond(atoms[atom1_idx-1], atoms[atom2_idx-1], bond_order, bond_aromaticity)
@@ -520,7 +520,7 @@ class Molecule:
         atom_site_header: dict[str:int] = {}
         ncol = 0
         # columns required to be present by the parser
-        required_columns = ['type_symbol', 'cartn_x', 'cartn_y', 'cartn_z']
+        required_columns = {'type_symbol', 'cartn_x', 'cartn_y', 'cartn_z'}
         # will hold the body of the 'atom_site' loop
         atom_site_body: list[str] = ""
 
@@ -539,12 +539,14 @@ class Molecule:
                 if not in_atom_site_body:
                     if _is_atom_site_header(line):
                         # add column name to the list, without the loop name prefix
-                        atom_site_header[line[11:].lower().rstrip()] = ncol
+                        column_name = line[11:].lower().rstrip()
+                        if columns_name in required_columns:
+                            atom_site_header[column_name] = ncol
                         ncol += 1
                     else:
                         in_atom_site_body = True
                         # check that the required columns are present
-                        if any( column not in atom_site_header for column in required_columns ):
+                        if len(atom_site_header < 4):
                             logging.error(f'.cif file\'s atom_site section lacks the required columns')
                             return None
                 
@@ -598,16 +600,15 @@ class Molecule:
 
             # numeric values in .cif files may be appended with an uncertainty in parenthesis
             # the parser ignores this
-            for coord in x, y, z:
-                parenthesis = coord.rfind('(')
-                if parenthesis != -1:
-                    coord = coord[:parenthesis]
-
+            x = re.match(r'^[^(]+', x)
+            y = re.match(r'^[^(]+', y)
+            z = re.match(r'^[^(]+', z)
+            
             atom = Atom(symbol, name=i+1, x=float(x), y=float(y), z=float(z))
             atoms.append(atom)
 
         # get conjectural name
-        name = file_path.split('/')[-1]
+        name = os.path.basename(file_path)
 
         return cls(name, atoms)
 
@@ -665,12 +666,12 @@ class Molecule:
         out += f'{len(self._atoms):3}{len(unique_bonds):3}  0  0  0  0  0  0  0  0999 V2000\n'
 
         # used to convert between actual atomic charges to .mol file symbolic representations
-        charge_indices = { 0: '  0', 1: '  3', 2: '  2', 3: '  1', -1: '  5', -2: '  6', -3: '  7'  }
+        charge_indices = { 0: '0', 1: '3', 2: '2', 3: '1', -1: '5', -2: '6', -3: '7'  }
         # atoms
         for atom in self._atoms:
             charge = atom.charge if -3 <= atom.charge <= 3 else 0
             charge = charge_indices[charge]
-            out += f'{atom.x:10.4f}{atom.y:10.4f}{atom.z:10.4f} {atom.symbol:3} 0{charge}  0  0  0  0  0  0  0  0  0\n'
+            out += f'{atom.x:10.4f}{atom.y:10.4f}{atom.z:10.4f} {atom.symbol:3} 0  {charge}  0  0  0  0  0  0  0  0  0\n'
 
         #bonds
         for bond in unique_bonds:
