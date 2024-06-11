@@ -1,6 +1,8 @@
 import logging
 
+from .main import Molecule
 from .utils import CustomParser, setup_logging
+
 
 def parse_args():
     """Parse command line arguments."""
@@ -21,7 +23,27 @@ def parse_args():
 
     subparsers = parser.add_subparsers(dest='command', help='Command to run.')
 
-    ... #TODO
+    convert_parser = subparsers.add_parser('convert', help='Convert molecule file formats')
+    convert_parser.add_argument(
+        'input_format',
+        choices=['xyz', 'cif', 'smiles', 'mol'],
+        help='Input file format.'
+    )
+    convert_parser.add_argument(
+        'output_format',
+        choices=['xyz', 'mol'],
+        help='Output file format.'
+    )
+    convert_parser.add_argument(
+        'input_file',
+        type=str,
+        help='Path to the input file.'
+    )
+    convert_parser.add_argument(
+        'output_file',
+        type=str,
+        help='Path to the output file.'
+    )
     
     args = parser.parse_args()
     if not args:
@@ -38,9 +60,36 @@ def parse_args():
     return args
 
 
+def convert_file(input_format, output_format, input_file, output_file):
+    """Convert molecule file from one format to another."""
+    molecule = None
+
+    # Load molecule from input file
+    if input_format == 'mol':
+        molecule = Molecule.from_mol(input_file)
+    elif input_format == 'xyz':
+        molecule = Molecule.from_xyz(input_file)
+    elif input_format == 'cif':
+        molecule = Molecule.from_cif(input_file)
+    elif input_format == 'smiles':
+        molecule = Molecule.from_smiles(input_file)
+    else:
+        raise ValueError(f"Unsupported input format: {input_format}")
+
+    # Save molecule to output file
+    if output_format == 'mol':
+        molecule.save_mol(output_file)
+    elif output_format == 'xyz':
+        molecule.save_xyz(output_file)
+    else:
+        raise ValueError(f"Unsupported output format: {output_format}")
+
+
 def main():
     args = parse_args()
-    
+    if args.command == 'convert':
+        convert_file(args.input_format, args.output_format, args.input_file, args.output_file)
+
 
 if __name__ == '__main__':
     main()
