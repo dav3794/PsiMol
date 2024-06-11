@@ -210,8 +210,8 @@ class Molecule:
             name (str): Name of the molecule.
             atoms (List[Atom], optional): List of atoms in the molecule.
             bonds (Dict[Atom, List[Bond]], optional): Dictionary mapping atoms to their bonds.
-            If not provided, bonds are created based on the covalent radii of atoms and their
-            coordinates.
+                If not provided, bonds are created based on the covalent radii of atoms and their
+                coordinates.
         """
         self.name = name
         self._atoms = atoms
@@ -251,10 +251,21 @@ class Molecule:
 
     @property
     def atoms(self) -> List[Atom]:
+        """Expose the constituent atoms of the molecule.
+
+        Returns:
+            List[Atom]: List of atoms in the molecule
+        """
+
         return self._atoms
 
     @property
     def bonds(self) -> Dict[Atom, List[Bond]]:
+        """Expose the bonds between the atoms of the molecule.
+
+        Returns:
+            Dict[Atom, List[Bond]]: Dictionary of atoms and the bonds they participate in
+        """
         return self._bonds
     
     @property
@@ -1091,8 +1102,6 @@ class Molecule:
     def to_xyz(self) -> str:
         """Return molecule representation in .xyz format
 
-        Args:
-            header (bool, optional): Whether to include the header. Defaults to True.
         Returns:
             str: String representing molecule in .xyz format
         """
@@ -1180,8 +1189,8 @@ class Molecule:
 
         Args:
             method (str, optional): Method/basis set to use for geometry
-            optimization. Defaults to 'b3lyp/6-31g*'.
-            num_threads (int, optional) Number of threads. Defaults to 4.
+                optimization. Defaults to 'b3lyp/6-31g*'.
+            num_threads (int, optional): Number of threads. Defaults to 4.
             memory (str, optional): Memory to allocate for the computation. Defaults to '2GB'.
             **kwargs: Additional keyword arguments to pass to psi4.set_options.
 
@@ -1221,8 +1230,8 @@ class Molecule:
 
         Args:
             method (str, optional): Method/basis set to use for vibrational
-            frequency calculation. Defaults to 'b3lyp/6-31g*'.
-            num_threads (int, optional) Number of threads. Defaults to 4.
+                frequency calculation. Defaults to 'b3lyp/6-31g*'.
+            num_threads (int, optional): Number of threads. Defaults to 4.
             memory (str, optional): Memory to allocate for the computation. Defaults to '2GB'.
             **kwargs: Additional keyword arguments to pass to psi4.set_options.
 

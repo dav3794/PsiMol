@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>psimol.Bond - PsiMol</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "psimol.Bond";
+        var mkdocs_page_input_path = "python/bond.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]--> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../index.html" class="icon icon-home"> PsiMol
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Python module</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="molecule.html">psimol.Molecule</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="atom.html">psimol.Atom</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">psimol.Bond</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#main.Bond">Bond</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Bond.__init__">__init__</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main.Bond.bond_length">bond_length</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">CLI tool</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli/intro.html">Overview</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PsiMol</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html" class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Python module</li>
+      <li class="breadcrumb-item active">psimol.Bond</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="psimolbond">psimol.Bond</h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="main.Bond"></a>
+    <div class="doc doc-contents first">
+
+
+      <p>Class to represent a bond from a given atom to another.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="main.Bond.__init__" class="doc doc-heading">
+            <code class=" language-python"><span style="color: #0000FF">__init__</span>(first_atom, second_atom, order<span style="color: #666666">=1</span>, aromatic<span style="color: #666666">=</span><span style="color: #008000; font-weight: bold">False</span>, metallic<span style="color: #666666">=</span><span style="color: #008000; font-weight: bold">False</span>)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize the bond.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>first_atom</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>First atom of the bond</p>
+              </div>
+            </li>
+            <li>
+              <b><code>second_atom</code></b>
+                  (<code><a class="autorefs autorefs-internal" title="main.Atom" href="atom.html#main.Atom">Atom</a></code>)
+              –
+              <div class="doc-md-description">
+                <p>Second atom of the bond</p>
+              </div>
+            </li>
+            <li>
+              <b><code>order</code></b>
+                  (<code><span title="typing.Literal">Literal</span>[1, 2, 3]</code>, default:
+                      <code>1</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Bond order (single, double or triple). Defaults to 1.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>aromatic</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether a bond is aromatic. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>metallic</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether a bond is metallic. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="main.Bond.bond_length" class="doc doc-heading">
+            <code class=" language-python">bond_length: <span style="color: #008000">float</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate the bond length as the Euclidean distance
+between atoms.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>float</code></b>(                  <code>float</code>
+)              –
+              <div class="doc-md-description">
+                <p>Bond length.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="atom.html" class="btn btn-neutral float-left" title="psimol.Atom"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../cli/intro.html" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="atom.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../cli/intro.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

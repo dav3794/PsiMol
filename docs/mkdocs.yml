@@ -1,0 +1,38 @@
+site_name: PsiMol
+theme:
+  name: readthedocs
+  highlightjs: false
+
+markdown_extensions:
+  - codehilite:
+      guess_lang: False
+      noclasses: True
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: 
+            - ../psimol
+          options:
+            show_root_heading: false                # Do not include heading for the root class, only its methods/properties
+            show_source: false                      # Do not show method source
+            separate_signature: false               # Include method name and parameters on one line
+            docstring_style: google                 # Docstrings are Google-style
+            show_signature_annotations: false       # Do not include types of parameters in method signatures
+            member_order: alphabetical              # As opposed to 'source' order
+            group_by_category: false                # Force class members to be ordered as per above
+            show_labels: false                      # Do not show type of member
+
+nav:
+  - Introduction: index.md
+  - Python module:
+      - Overview: python/intro.md
+      - psimol.Molecule: python/molecule.md
+      - psimol.Atom: python/atom.md
+      - psimol.Bond: python/bond.md
+  - CLI tool:
+      - Overview: cli/intro.md
+#      - Commands: cli/cmd.md
+

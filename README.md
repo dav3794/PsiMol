@@ -40,3 +40,16 @@ PsiMol is also available as a command-line tool with multiple functionalities. E
 ```bash
 psimol add_hydrogens -i file -o file_with_H --format xyz
 ```
+
+
+## Documentation
+
+The source for PsiMol's documentation, written with [MkDocs](https://www.mkdocs.org/), is available under `docs`.
+A pre-generated copy of the documentation is available under `docs/site`.
+The pre-generated copy of the documentation should be up to date with the documentation source, but you may rebuild documentation with the following commands:
+
+```bash
+pip install mkdocstrings-python
+cd PsiMol
+mkdocs build --clean --no-directory-urls -f docs/mkdocs.yml
+```
