@@ -1,9 +1,12 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 setup(
     name='psimol',
     version='0.1.0',
-    packages=find_packages(),
+    packages=find_namespace_packages(),
+    package_data={
+        "psimol.configs": ["*.yml"],
+    },
     include_package_data=True,
     install_requires=[
         'numpy',
