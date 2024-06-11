@@ -25,28 +25,32 @@ def parse_args():
 
     convert_parser = subparsers.add_parser('convert', help='Convert molecule file formats')
     convert_parser.add_argument(
-        'input_format',
+        '--input-format',
         choices=['xyz', 'cif', 'smiles', 'mol'],
+        required=True,
         help='Input file format.'
     )
     convert_parser.add_argument(
-        'output_format',
+        '--output-format',
         choices=['xyz', 'mol'],
+        required=True,
         help='Output file format.'
     )
     convert_parser.add_argument(
-        'input_file',
+        '-i', '--input',
         type=str,
+        required=True,
         help='Path to the input file.'
     )
     convert_parser.add_argument(
-        'output_file',
+        '-o', '--output',
         type=str,
+        required=True,
         help='Path to the output file.'
     )
-    
+
     args = parser.parse_args()
-    if not args:
+    if not args.command:
         parser.print_help()
         parser.exit(1)
 
@@ -88,7 +92,7 @@ def convert_file(input_format, output_format, input_file, output_file):
 def main():
     args = parse_args()
     if args.command == 'convert':
-        convert_file(args.input_format, args.output_format, args.input_file, args.output_file)
+        convert_file(args.input_format, args.output_format, args.input, args.output)
 
 
 if __name__ == '__main__':
