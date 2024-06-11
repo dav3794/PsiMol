@@ -108,7 +108,7 @@ def convert_file(input_format, output_format, input_file, output_file, add_hydro
     """Convert molecule file from one format to another."""
     molecule = load_molecule(input_format, input_file)
 
-    if add_hydrogens:
+    if add_hydrogens and input_format != 'smiles':
         molecule.add_hydrogens()
 
     save_molecule(molecule, output_format, output_file)
