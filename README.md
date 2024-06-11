@@ -31,14 +31,42 @@ molecule.add_hydrogens()
 print(molecule.molar_mass)
 ```
 
-For more examples of PsiMol usage, see *psimol/tutorial.ipynb* notebook.
+For more examples of PsiMol usage, see `psimol/tutorial.ipynb` notebook.
 
 ### CLI
 
-PsiMol is also available as a command-line tool with multiple functionalities. Example:
+PsiMol is also available as a command-line tool with multiple functionalities.
 
-```bash
-psimol add_hydrogens -i file -o file_with_H --format xyz
+```
+usage: psimol [-h] [-v] [-q] {convert} ...
+
+psimol command line interface
+
+positional arguments:
+  {convert}      Command to run.
+    convert      Convert molecule file formats
+
+options:
+  -h, --help     show this help message and exit
+  -v, --verbose  Enable verbose logging.
+  -q, --quiet    Disable logging except errors.
+```
+
+Converting between files:
+```
+usage: psimol convert [-h] --input-format {xyz,cif,smiles,mol} --output-format {xyz,mol} -i INPUT -o OUTPUT [--add-hydrogens]
+
+options:
+  -h, --help            show this help message and exit
+  --input-format {xyz,cif,smiles,mol}
+                        Input file format.
+  --output-format {xyz,mol}
+                        Output file format.
+  -i INPUT, --input INPUT
+                        Path to the input file.
+  -o OUTPUT, --output OUTPUT
+                        Path to the output file.
+  --add-hydrogens       Add hydrogens to the molecule.
 ```
 
 
