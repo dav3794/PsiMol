@@ -49,6 +49,12 @@ def parse_args():
         help='Path to the output file.'
     )
 
+    convert_parser.add_argument(
+        '--add-hydrogens',
+        action='store_true',
+        help='Add hydrogens to the molecule.'
+    )
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
@@ -63,12 +69,7 @@ def parse_args():
 
     return args
 
-
-def convert_file(input_format, output_format, input_file, output_file):
-    """Convert molecule file from one format to another."""
-    molecule = None
-
-    # Load molecule from input file
+def load_molecule(input_format, input_file):
     if input_format == 'mol':
         molecule = Molecule.from_mol(input_file)
     elif input_format == 'xyz':
@@ -76,18 +77,41 @@ def convert_file(input_format, output_format, input_file, output_file):
     elif input_format == 'cif':
         molecule = Molecule.from_cif(input_file)
     elif input_format == 'smiles':
-        molecule = Molecule.from_smiles(input_file)
+        with open(input_file, 'r') as f:
+            input_file = f.readlines()
+        molecule = []
+        for line in input_file:
+            molecule.append(Molecule.from_smiles(line.strip()))
     else:
         raise ValueError(f"Unsupported input format: {input_format}")
+    
+    return molecule
 
-    # Save molecule to output file
-    if output_format == 'mol':
-        molecule.save_mol(output_file)
-    elif output_format == 'xyz':
-        molecule.save_xyz(output_file)
+def save_molecule(molecule, output_format, output_file):
+    if isinstance(molecule, list):
+        for i, mol in enumerate(molecule):
+            if output_format == 'mol':
+                mol.save_mol(output_file + f'_{i}.mol')
+            elif output_format == 'xyz':
+                mol.save_xyz(output_file + f'_{i}.xyz')
+            else:
+                raise ValueError(f"Unsupported output format: {output_format}")
     else:
-        raise ValueError(f"Unsupported output format: {output_format}")
+        if output_format == 'mol':
+            molecule.save_mol(output_file)
+        elif output_format == 'xyz':
+            molecule.save_xyz(output_file)
+        else:
+            raise ValueError(f"Unsupported output format: {output_format}")
 
+def convert_file(input_format, output_format, input_file, output_file, add_hydrogens=False):
+    """Convert molecule file from one format to another."""
+    molecule = load_molecule(input_format, input_file)
+
+    if add_hydrogens:
+        molecule.add_hydrogens()
+
+    save_molecule(molecule, output_format, output_file)
 
 def main():
     args = parse_args()
